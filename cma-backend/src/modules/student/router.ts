@@ -7,29 +7,29 @@ import { errorResponse, successResponse } from "../../utils/response";
 const router = Router();
 const service = Container.get(StudentService);
 
-router.get('/my-lessons', (req, res) => {
+router.get('/my-lessons', async (req, res) => {
     const { phone } = req.query;
     try {
-        const result = service.getMyLessons(phone as string);
+        const result = await service.getMyLessons(phone as string);
         successResponse(res, result )
     } catch (error) {
         errorResponse(res, error)
     }
 });
-router.post('/mark-lesson-done', (req, res) => {
+router.post('/mark-lesson-done', async (req, res) => {
     const { phone, lessonId } = req.body;
     try {
-        const result = service.markLessonDone(phone, lessonId);
+        const result = await service.markLessonDone(phone, lessonId);
         successResponse(res, result )
     } catch (error) {
         errorResponse(res, error)
     }
 });
-router.put('/edit-profile', (req, res) => {
+router.put('/edit-profile', async (req, res) => {
     const { phone, name, email } = req.body;
     const { userId} = req.cookies.userId;
     try {
-        const result = service.editProfile(userId, { name, email, phone });
+        const result = await service.editProfile(userId, { name, email, phone });
         successResponse(res, result )
     } catch (error) {
         errorResponse(res, error)

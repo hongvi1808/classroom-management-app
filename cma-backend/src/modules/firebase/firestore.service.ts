@@ -36,9 +36,9 @@ export class FiretoreService {
         const docSnap = querySnapshot.docs[0];
         return { id: docSnap.id, ...docSnap.data() };
     }
-    public async findAll(collectionName: string,) {
+    public async findAllBy(collectionName: string,  opt: { filed: string, op: any, value: any }) {
         const collection = this.getCollection(collectionName)
-        const queryZ = query(collection, orderBy('updatedAt'));
+        const queryZ = query(collection, orderBy('updatedAt'), where(opt.filed, opt.op, opt.value));
         const res = await getDocs(queryZ);
         return res;
     }

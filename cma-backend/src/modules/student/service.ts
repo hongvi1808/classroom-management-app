@@ -26,12 +26,12 @@ export class StudentService {
         }
         lesson.status = 'done';
         lesson.completedAt = new Date().getTime();
-        return await this.firestoreService.update('student', studentDoc.id, {
+        return await this.firestoreService.update('user', studentDoc.id, {
             updatedAt: new Date().getTime(),
             lessons
         });
     }
     public async editProfile(studentId: string, data: { name: string, email: string, phone: string }) {
-        return await this.firestoreService.update('student', studentId, data);
+        return await this.firestoreService.update('user', studentId, data);
     }
 }
