@@ -5,13 +5,13 @@ import cors from 'cors';
 import helmet from 'helmet';
 import 'reflect-metadata';
 import Container from 'typedi';
-import { FirebaseAppService } from './modules/firebase/firebase.service';
 import { instructorRouter } from './modules/instructor/router';
 import { studentRouter } from './modules/student/router';
 import { expressjwt } from 'express-jwt';
 import { authRoleMiddleware } from './utils/role.middleware';
 import { ROLE_INSTRCTOR, ROLE_STUDENT } from './utils/constant';
 import { authenRouter } from './modules/authentication/router';
+import { FirebaseAppService } from './modules/firebase/firebase.service';
 
 const app = express();
 dotenv.config();
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());
 
-Container.get(FirebaseAppService)
+Container.get(FirebaseAppService);
 
 app.use('/auth', authenRouter)
 app.use(expressjwt({

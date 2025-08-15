@@ -1,6 +1,7 @@
 import { Twilio } from "twilio";
 import { Service } from "typedi";
-
+import * as dotenv from "dotenv";
+dotenv.config();
 @Service()
 export class TwilioService {
     private client: Twilio;

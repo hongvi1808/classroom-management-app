@@ -1,6 +1,7 @@
 import { Service } from "typedi";
 import nodemailer from "nodemailer";
-
+import * as dotenv from "dotenv";
+dotenv.config();
 @Service()
 export class MailService {
     private transport: any

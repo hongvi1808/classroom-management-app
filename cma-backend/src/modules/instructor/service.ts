@@ -1,15 +1,15 @@
 import { Service } from "typedi";
-import { FiretoreService } from "../firebase/firestore.service";
+import { FirestoreService } from "../firebase/firestore.service";
 import { v7 as uuidv7 } from 'uuid';
-import { UserCollection } from "../firebase/schema";
+import { USER_COLLECTION_NAME, UserCollection } from "../firebase/schema";
 import { MailService } from "../mail/mail.service";
 import { ROLE_STUDENT } from "../../utils/constant";
 
 @Service()
 export class InstructorService {
-    private firestoreService: FiretoreService;
+    private firestoreService: FirestoreService;
     private mailService: MailService;
-    constructor(firestoreService: FiretoreService, mailService: MailService) {
+    constructor(firestoreService: FirestoreService, mailService: MailService) {
         this.firestoreService = firestoreService;
         this.mailService = mailService;
     }
@@ -28,7 +28,7 @@ export class InstructorService {
             createdAt: new Date().getTime(),
             updatedAt: new Date().getTime()
         }
-        const res = await this.firestoreService.create('user', dataStudent);
+        const res = await this.firestoreService.create(USER_COLLECTION_NAME, dataStudent);
         const mailContent = `<p>Click <a href=${process.env.SECURE_ACCOUNT_PAGE_LINK}/${dataStudent.id} >tại đây</a> để xác thực tài khoản </p> `
         await this.mailService.sendMail( data.email,'Xác thực tài khoản',mailContent);
         return res
@@ -46,19 +46,19 @@ export class InstructorService {
 
             })
 
-        return await this.firestoreService.update('user', studentDoc.id, {
+        return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, {
             updatedAt: new Date().getTime(),
             lessons: assigned
 
         });
     }
     public async getStudents() {
-        const students = await this.firestoreService.findAllBy('user', { filed: 'role', op: '==', value: ROLE_STUDENT });
+        const students = await this.firestoreService.findAllBy(USER_COLLECTION_NAME, { filed: 'role', op: '==', value: ROLE_STUDENT });
         return students.docs.map(doc => doc.data());
     }
 
     public async getStudentByPhone(phone: string) {
-        const studentDoc = await this.firestoreService.findOneBy('user', { filed: 'phoneNumber', op: '==', value: phone });
+        const studentDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'phoneNumber', op: '==', value: phone });
         if (!studentDoc) {
             throw { message: 'Student not found', code: 'STUDENT_NOT_FOUND' }
         }
@@ -70,10 +70,10 @@ export class InstructorService {
         const updatedData: any = { updatedAt: new Date().getTime() };
         if (data.name) updatedData.name = data.name;
         if (data.email) updatedData.email = data.email;
-        return await this.firestoreService.update('user', studentDoc.id, updatedData);
+        return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, updatedData);
     }
     public async deleteStudent(phone: string) {
         const studentDoc = await this.getStudentByPhone(phone);
-        return this.firestoreService.delete('user', studentDoc.id);
+        return this.firestoreService.delete(USER_COLLECTION_NAME, studentDoc.id);
     }
 }

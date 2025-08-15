@@ -1,12 +1,12 @@
 import { Service } from "typedi";
-import { FiretoreService } from "../firebase/firestore.service";
+import { FirestoreService } from "../firebase/firestore.service";
 import { InstructorService } from "../instructor/service";
 
 @Service()
 export class StudentService {
-    private firestoreService: FiretoreService;
+    private firestoreService: FirestoreService;
     private instructorService: InstructorService;
-    constructor(firestoreService: FiretoreService, instructorService: InstructorService) {
+    constructor(firestoreService: FirestoreService, instructorService: InstructorService) {
         this.firestoreService = firestoreService;
         this.instructorService = instructorService;
     }
@@ -26,12 +26,12 @@ export class StudentService {
         }
         lesson.status = 'done';
         lesson.completedAt = new Date().getTime();
-        return await this.firestoreService.update('user', studentDoc.id, {
+        return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, {
             updatedAt: new Date().getTime(),
             lessons
         });
     }
     public async editProfile(studentId: string, data: { name: string, email: string, phone: string }) {
-        return await this.firestoreService.update('user', studentId, data);
+        return await this.firestoreService.update(USER_COLLECTION_NAME, studentId, data);
     }
 }

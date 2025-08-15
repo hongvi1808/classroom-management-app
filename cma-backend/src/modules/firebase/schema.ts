@@ -1,3 +1,4 @@
+export const USER_COLLECTION_NAME = 'user';
 export interface UserCollection {
     id: string;
     name: string;
