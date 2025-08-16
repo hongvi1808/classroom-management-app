@@ -4,7 +4,7 @@ import { FirestoreService } from "../firebase/firestore.service";
 import { TwilioService } from "../twilio/twilio.service"
 import { v7 as uuidv7 } from 'uuid';;
 import { formatPhoneNumber, gen6DigitCode } from "../../utils/function";
-import { generateAccessToken } from "../../utils/jwt";
+import { generateToken, verifyToken } from "../../utils/jwt";
 import { ROLE_INSTRCTOR } from "../../utils/constant";
 import { MailService } from "../mail/mail.service";
 import * as bcrypt from 'bcrypt';
@@ -15,7 +15,7 @@ export class AuthenticationService {
     private firestoreService: FirestoreService;
     private twilioService: TwilioService;
     private mailService: MailService;
-    constructor( ) {
+    constructor() {
         this.firestoreService = Container.get(FirestoreService);
         this.twilioService = Container.get(TwilioService);
         this.mailService = Container.get(MailService);
@@ -36,24 +36,21 @@ export class AuthenticationService {
                 createdAt: new Date().getTime(),
                 updatedAt: new Date().getTime()
             });
-            // await this.firestoreService.update(USER_COLLECTION_NAME, id, {
-            //     accessCode: codeDigit,
-            // })
         }
         else await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, {
             accessCode: codeDigit,
         })
         // send code to twilio
         await this.twilioService.sendSMS(phoneNumber, `Your access code is: ${codeDigit}`);
-        return { phoneNumber: phone };
+        return { phoneNumber: phone, accessCode: codeDigit };
     }
 
     public async validateAccessCode(phoneNumber: string, accessCode: string) {
         const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'phoneNumber', op: '==', value: phoneNumber });
         if (accessCode === userDoc?.accessCode) {
             await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', updatedAt: new Date().getTime() });
-            const token = await generateAccessToken({ userId: userDoc.id, role: userDoc.role });
-            return token;
+            const { token, expireAt } = await generateToken({ userId: userDoc.id, role: userDoc.role });
+            return { accessToken: token, userId: userDoc.id, role: userDoc.role, expireAt };
         } else {
             throw { message: 'Invalid access code', code: 'INVALID_ACCESS_CODE' };
         }
@@ -75,24 +72,25 @@ export class AuthenticationService {
         const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'email', op: '==', value: email });
         if (userDoc && userDoc.accessCode === accessCode) {
             await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', updatedAt: new Date().getTime() });
-            const token = await generateAccessToken({ userId: userDoc.id, role: userDoc.role });
-            return token;
+            const { token, expireAt } = await generateToken({ userId: userDoc.id, role: userDoc.role });
+            return { accessToken: token, userId: userDoc.id, role: userDoc.role, expireAt };
         } else {
             throw { message: 'Invalid email or access code', code: 'INVALID_EMAIL_ACCESS_CODE' };
         }
     }
 
-    public async setupAccount(id: string, body: {username: string, password: string}) {
+    public async setupAccount(id: string, body: { username: string, password: string }) {
         const userDoc = await this.firestoreService.findById(USER_COLLECTION_NAME, id);
         const hashedPassword = await bcrypt.hash(body.password, 10)
         if (!userDoc.exists()) {
             throw { message: 'Verify failed', code: 'FAILED_VERIFY' };
         }
-        await this.firestoreService.update(USER_COLLECTION_NAME, id, { 
+        await this.firestoreService.update(USER_COLLECTION_NAME, id, {
             isVerified: true,
             username: body.username,
-            password: hashedPassword, 
-            updatedAt: new Date().getTime() });
+            password: hashedPassword,
+            updatedAt: new Date().getTime()
+        });
         return true;
     }
     public async login(username: string, password: string) {
@@ -103,11 +101,19 @@ export class AuthenticationService {
 
         const hashedPassword = await bcrypt.hash(password, 10)
         if (userDoc.password !== hashedPassword) {
-            throw { message: 'Password is not correct', code: 'PASSWORD_NOT_CORRECT'};
+            throw { message: 'Password is not correct', code: 'PASSWORD_NOT_CORRECT' };
         }
 
-        const token = await generateAccessToken({ userId: userDoc.id, role: userDoc.role });
-        return token;
+        const { token, expireAt } = await generateToken({ userId: userDoc.id, role: userDoc.role });
+        return { accessToken: token, userId: userDoc.id, role: userDoc.role, expireAt };
+    }
+    public async refresh(refreshToken: string) {
+        if (!refreshToken) throw { code: 'UNAUTHEN', message: 'Refresh token is existed' }
+        const payload = await verifyToken(refreshToken);
+        if (!payload.userId || !payload.role) throw { code: 'UNAUTHEN', message: 'Refresh token is error' }
+
+        const { token, expireAt } = await generateToken({ userId: payload.id, role: payload.role });
+        return { accessToken: token, userId: payload.id, role: payload.role, expireAt };
     }
 
 }

@@ -1,6 +1,7 @@
 import { Service } from "typedi";
 import { FirestoreService } from "../firebase/firestore.service";
 import { InstructorService } from "../instructor/service";
+import { USER_COLLECTION_NAME } from "../firebase/schema";
 
 @Service()
 export class StudentService {

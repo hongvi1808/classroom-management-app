@@ -29,7 +29,7 @@ router.post('/assign-lesson', async (req, res) => {
 
 router.get('/students', async (req, res) => {
     try {
-        const result = await service.getStudents
+        const result = await service.getStudents()
         successResponse(res, result )
     } catch (error) {
         errorResponse(res, error)
