@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import '../globals.css'
 import StyleRoot from "@/base/ui/style-root";
+import ReactQueryProvider from "@/base/react-query/provider";
+import { LayoutInstructor } from "@/components/layouts/layout-bar.comp";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,9 +30,13 @@ export default function InstructorRootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <StyleRoot>
-          {children}
-        </StyleRoot>
+        <ReactQueryProvider>
+          <StyleRoot>
+            <LayoutInstructor>
+              {children}
+            </LayoutInstructor>
+          </StyleRoot>
+        </ReactQueryProvider>
       </body>
     </html>
   );

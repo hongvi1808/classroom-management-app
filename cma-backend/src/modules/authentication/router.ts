@@ -44,7 +44,7 @@ router.post('/login-with-email', async (req, res) => {
     }
 });
 
-router.post('/validate-email-code', async (req, res) => {
+router.post('/validate-email-access-code', async (req, res) => {
     const { email, accessCode } = req.body;
     try {
         const result = await service.validateEmail(email, accessCode);

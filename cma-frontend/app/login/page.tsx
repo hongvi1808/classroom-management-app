@@ -1,21 +1,25 @@
 import { TextFiledControlBase } from "@/components/textfield/textfield.comp";
-import { Box, Button, Card, Divider, FormControl, FormLabel, Input, Link, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, Divider, FormControl, FormLabel, Icon, Input, Link, Stack, TextField, Typography } from "@mui/material";
 import { HomeLoginForm } from "./home-login-form.comp";
-import { ButtonBase } from "@/components/button/button.comp";
+import { ButtonBase } from "@/components/button/button-base.comp";
 import NextLink from "next/link";
+import { ArrowLeftIcon, DevicePhoneMobileIcon, EnvelopeIcon } from "@heroicons/react/16/solid";
+import { ButtonBack } from "@/components/button/button-back.comp";
 
 export default function Login() {
   return (
     <Stack spacing={4} sx={{ justifyContent: "center", padding: 2, }}>
-      <Typography component={'h1'} variant="h4"></Typography>
-      <Typography
-        component="h1"
-        variant="h4"
-        textAlign={'center'}
-        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-      >
-        {'Log in'}
-      </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <ButtonBack />
+        <Typography
+          component="h1"
+          variant="h4"
+          textAlign={'center'}
+          sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+        >
+          {'Log in'}
+        </Typography>
+      </Box>
       <HomeLoginForm />
       <Divider>
         <Typography sx={{ color: 'text.secondary' }}>or</Typography>
@@ -24,15 +28,27 @@ export default function Login() {
         <ButtonBase component={NextLink}
           fullWidth
           href="/login/phone"
-          variant="outlined" children="Log in with Phone Number" />
+          variant="outlined"
+          children={<Stack spacing={2} direction={'row'} >
+            <Icon sx={{ justifyContent: 'center', alignContent: 'center' }} >
+              <DevicePhoneMobileIcon width={20} height={20} color="primary" />
+            </Icon>
+            {'Log in with Phone Number'}
+          </Stack>} />
         <ButtonBase component={NextLink}
           href="/login/email"
           fullWidth
-          variant="outlined" children="Log in with Email" />
+          variant="outlined"
+          children={<Stack spacing={2} direction={'row'} >
+            <Icon sx={{ justifyContent: 'center', alignContent: 'center' }} >
+              <EnvelopeIcon width={20} height={20} color="primary" />
+            </Icon>
+            {'Log in with Email'}
+          </Stack>} />
         <Typography sx={{ textAlign: 'center' }}>
-         Haven't had an account ?
+          {"Don't you have an account? "}
           <Link
-            href=""
+            href="phone/login"
             variant="body2"
             sx={{ alignSelf: 'center' }}
           >

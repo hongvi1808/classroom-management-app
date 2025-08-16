@@ -8,5 +8,11 @@ export const authApis = {
     },
     verifyPhone: (data: any) => {
         return apiBase.post(`${urlDefault}/validate-access-code`, data);
-    }
+    },
+    loginEmail: (data: any) => {
+        return apiBase.post(`${urlDefault}/login-with-email`, data);
+    },
+    verifyEmail: (data: any) => {
+        return apiBase.post(`${urlDefault}/validate-email-access-code`, data);
+    },
 }

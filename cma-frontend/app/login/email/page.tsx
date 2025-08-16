@@ -1,10 +1,10 @@
 import { Box, Divider, Icon, Link, Stack, Typography } from "@mui/material";
 import { HomeLoginForm } from "../home-login-form.comp";
-import { PhoneLoginForm } from "./phone-login-form.comp";
 import { ArrowLeftIcon } from "@heroicons/react/16/solid";
 import { ButtonBack } from "@/components/button/button-back.comp";
+import { EmailLoginForm } from "./email-login-form.comp";
 
-export default function PhoneLoginPage() {
+export default function EmailLoginPage() {
   return (
     <Stack spacing={4} sx={{ justifyContent: "center", padding: 2, }}>
       <Box sx={{ display: 'flex', flexDirection: 'column',gap: 2 }}>
@@ -19,7 +19,7 @@ export default function PhoneLoginPage() {
       </Typography>
         <Typography textAlign={'center'} sx={{ color: 'text.secondary' }}>{'Please enter your phone to log in'}</Typography>
       </Box>
-      <PhoneLoginForm />
+      <EmailLoginForm />
       
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography sx={{ textAlign: 'center' }}>
