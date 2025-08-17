@@ -1,5 +1,5 @@
+import MyLessonPage from "./lessons/page";
 
-export default function Home() {
-  return (<>{'Student page role'}</>
-  );
+export default function StudentPage() {
+  return (<MyLessonPage/>);
 }

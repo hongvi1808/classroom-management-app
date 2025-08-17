@@ -47,9 +47,9 @@ export class AuthenticationService {
     public async validateAccessCode(phoneNumber: string, accessCode: string) {
         const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'phoneNumber', op: '==', value: phoneNumber });
         if (accessCode === userDoc?.accessCode) {
-            await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', updatedAt: new Date().getTime() });
-            const { token, expireAt } = await generateToken({ userId: userDoc.id, role: userDoc.role });
-            return { accessToken: token, userId: userDoc.id, role: userDoc.role, expireAt };
+            await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', active:true, alive:true, updatedAt: new Date().getTime() });
+            const { token, expireAt } = await generateToken({ phoneNumber: userDoc.id, role: userDoc.role });
+            return { accessToken: token, phoneNumber: userDoc.id, role: userDoc.role, expireAt };
         } else {
             throw { message: 'Invalid access code', code: 'INVALID_ACCESS_CODE' };
         }
@@ -70,9 +70,9 @@ export class AuthenticationService {
     public async validateEmail(email: string, accessCode: string) {
         const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'email', op: '==', value: email });
         if (userDoc && userDoc.accessCode === accessCode) {
-            await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', updatedAt: new Date().getTime() });
-            const { token, expireAt } = await generateToken({ userId: userDoc.id, role: userDoc.role });
-            return { accessToken: token, userId: userDoc.id, role: userDoc.role, expireAt };
+            await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', active:true, alive:true, updatedAt: new Date().getTime() });
+            const { token, expireAt } = await generateToken({ phoneNumber: userDoc.id, role: userDoc.role });
+            return { accessToken: token, phoneNumber: userDoc.id, role: userDoc.role, expireAt };
         } else {
             throw { message: 'Invalid email or access code', code: 'INVALID_EMAIL_ACCESS_CODE' };
         }
@@ -88,6 +88,7 @@ export class AuthenticationService {
             isVerified: true,
             username: body.username,
             password: hashedPassword,
+             active:true, alive:true,
             updatedAt: new Date().getTime()
         });
         return true;
@@ -103,16 +104,16 @@ export class AuthenticationService {
             throw { message: 'Password is not correct', code: 'PASSWORD_NOT_CORRECT' };
         }
 
-        const { token, expireAt } = await generateToken({ userId: userDoc.id, role: userDoc.role });
-        return { accessToken: token, userId: userDoc.id, role: userDoc.role, expireAt };
+        const { token, expireAt } = await generateToken({ phoneNumber: userDoc.id, role: userDoc.role });
+        return { accessToken: token, phoneNumber: userDoc.id, role: userDoc.role, expireAt };
     }
     public async refresh(refreshToken: string) {
         if (!refreshToken) throw { code: 'UNAUTHEN', message: 'Refresh token is existed' }
         const payload = await verifyToken(refreshToken);
-        if (!payload.userId || !payload.role) throw { code: 'UNAUTHEN', message: 'Refresh token is error' }
+        if (!payload.phoneNumber || !payload.role) throw { code: 'UNAUTHEN', message: 'Refresh token is error' }
 
-        const { token, expireAt } = await generateToken({ userId: payload.id, role: payload.role });
-        return { accessToken: token, userId: payload.id, role: payload.role, expireAt };
+        const { token, expireAt } = await generateToken({ phoneNumber: payload.id, role: payload.role });
+        return { accessToken: token, phoneNumber: payload.id, role: payload.role, expireAt };
     }
 
 }

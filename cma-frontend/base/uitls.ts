@@ -3,7 +3,7 @@ export const validRequire = (value: string) => {
 }
 export  const validPhone = (value: string) => {
         if (validRequire(value)) return validRequire(value)
-        if (!(/^(0|\+84)(\d{9})$/).test(value)) return 'Your number phone is invalid (in Vietnam)'
+        if (!(/^(0|\+84)(\d{11})$/).test(value)) return 'Your number phone is invalid (in Vietnam)'
     }
 export    const validEmail = (value: string) => {
         if (validRequire(value)) return validRequire(value)
@@ -15,3 +15,9 @@ export const SESSION_LOCAL_STORAGE_KEY = 'session'
 export const ROLE_INSTRCTOR = 'INSTRUCTOR';
 export const ROLE_STUDENT = 'STUDENT';
 
+export const getSessionLocal = () => {
+    if (typeof window === 'undefined') return null
+    const token = localStorage.getItem(SESSION_LOCAL_STORAGE_KEY)
+    const tokenObj = token ? JSON.parse(token) : null
+    return tokenObj
+}

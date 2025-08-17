@@ -24,7 +24,7 @@ export class InstructorService {
             password: '', // Assuming password is not required here
             username: '', // Assuming username is not required here
             phoneNumber:formatPhoneNumber(data.phoneNumber),
-            alive: true,
+             active:true, alive:true,
             lessons: [],
             role: data.role || ROLE_STUDENT,
             createdAt: new Date().getTime(),

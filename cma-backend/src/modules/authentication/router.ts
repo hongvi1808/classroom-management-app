@@ -21,7 +21,7 @@ router.post('/validate-access-code', async (req, res) => {
     const { phoneNumber, accessCode } = req.body;
     try {
         const result = await service.validateAccessCode(phoneNumber, accessCode);
-        const refreshToken = await generateToken({ userId: result.userId, role: result.role }, process.env.REFRESH_TOKEN_SECRET, '7d')
+        const refreshToken = await generateToken({ phoneNumber: result.phoneNumber, role: result.role }, process.env.REFRESH_TOKEN_SECRET, '7d')
         res.cookie("refreshToken", refreshToken.token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -48,7 +48,7 @@ router.post('/validate-email-access-code', async (req, res) => {
     const { email, accessCode } = req.body;
     try {
         const result = await service.validateEmail(email, accessCode);
-        const refreshToken = await generateToken({ userId: result.userId, role: result.role }, process.env.REFRESH_TOKEN_SECRET, '7d')
+        const refreshToken = await generateToken({ phoneNumber: result.phoneNumber, role: result.role }, process.env.REFRESH_TOKEN_SECRET, '7d')
         res.cookie("refreshToken", refreshToken.token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
     try {
         const result = await service.login(username, password);
 
-        const refreshToken = await generateToken({ userId: result.userId, role: result.role }, process.env.REFRESH_TOKEN_SECRET, '7d')
+        const refreshToken = await generateToken({ phoneNumber: result.phoneNumber, role: result.role }, process.env.REFRESH_TOKEN_SECRET, '7d')
         res.cookie("refreshToken", refreshToken.token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',

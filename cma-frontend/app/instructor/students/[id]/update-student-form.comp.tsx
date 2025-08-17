@@ -58,7 +58,7 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
         datas.id = phone;
         mutate(datas)
     }
-    return <Box>
+    return <Stack spacing={2}>
         <Stack direction={'row'} spacing={2} justifyContent={'space-between'}>
             <Typography component={'h1'} variant="h4">{'Student Information'}</Typography>
             <ButtonIconText
@@ -113,6 +113,6 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
             </Grid>
         </Box>
         <TableBase sx={{ marginTop: 2 }} loading={isLoading} rows={data?.lessons || []} columns={columns} />
-    </Box>
+    </Stack>
 
 }

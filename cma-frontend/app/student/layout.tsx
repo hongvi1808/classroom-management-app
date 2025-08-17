@@ -22,12 +22,12 @@ export const metadata: Metadata = {
 };
 const menu = [{
         text: 'My Lessons',
-        href: '/student/lesson',
+        href: '/student/lessons',
         icon: <BookOpenIcon width={20} height={20} />,
     },
     {
         text: 'Massage',
-        href: '/instructor/chat',
+        href: '/chat',
         icon: <ChatBubbleLeftIcon width={20} height={20} />,
     },
     ]

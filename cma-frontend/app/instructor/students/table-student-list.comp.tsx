@@ -4,7 +4,7 @@ import { showAlertError, showAlertSuccess } from "@/base/ui/toaster";
 import { ButtonIcon } from "@/components/button/button-icon.comp";
 import TableBase from "@/components/table/table-base.comp";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
-import { Box } from "@mui/material";
+import { Box, Chip } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
@@ -41,8 +41,16 @@ export function TableStudentList() {
         { field: 'name', headerName: 'Name', flex: 0.25 },
         { field: 'phoneNumber', headerName: 'Phone Number', flex: 0.25 },
         { field: 'email', headerName: 'Email', flex: 0.25 },
-        {
-            field: "action",
+        {field: 'active', headerName: 'Status', flex: 0.2, renderCell: (params) => (
+                <Chip
+                    label={params.row.status}
+                    color={params.row.status === 'complete' ? "success" : "warning"}
+                    size="medium"
+                    variant="filled"
+                />
+            ),
+        },
+        {field: "action",
             headerName: "", flex: 0.25,
             renderCell: (params) => (
                 <Box>
@@ -51,7 +59,7 @@ export function TableStudentList() {
                         onClick={() => router.push(`/instructor/students/${params.row.phoneNumber}`)} />
                     <ButtonIcon iconComp={<TrashIcon height={20} width={20} />}
                         buttonProps={{ color: 'error', loading: isPending }}
-                        onClick={() =>  mutate(params.row.phoneNumber)} />
+                        onClick={() => mutate(params.row.phoneNumber)} />
 
                 </Box>
             ),

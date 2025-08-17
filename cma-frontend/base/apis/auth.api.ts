@@ -15,4 +15,7 @@ export const authApis = {
     verifyEmail: (data: any) => {
         return apiBase.post(`${urlDefault}/validate-email-access-code`, data);
     },
+    logout: () => {
+        return apiBase.post(`${urlDefault}/logout`, {});
+    },
 }

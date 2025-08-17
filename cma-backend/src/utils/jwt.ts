@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
 
 export const generateToken = (
-  payload: { userId: string; role: string },
+  payload: { phoneNumber: string; role: string },
   secret?: string,
   expiresIn?: any,
 ) : Promise<{ token: string; expireAt: number }>=> {

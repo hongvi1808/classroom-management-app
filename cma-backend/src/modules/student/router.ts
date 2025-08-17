@@ -16,6 +16,15 @@ router.get('/my-lessons', async (req, res) => {
         errorResponse(res, error)
     }
 });
+router.get('/profile', async (req, res) => {
+    const { phone } = req.query;
+    try {
+        const result = await service.getProfile(phone as string);
+        successResponse(res, result )
+    } catch (error) {
+        errorResponse(res, error)
+    }
+});
 router.post('/mark-lesson-done', async (req, res) => {
     const { phone, lessonId } = req.body;
     try {
@@ -25,11 +34,11 @@ router.post('/mark-lesson-done', async (req, res) => {
         errorResponse(res, error)
     }
 });
-router.put('/edit-profile', async (req, res) => {
+router.put('/edit-profile/:phoneNumber', async (req, res) => {
     const { phone, name, email } = req.body;
-    const { userId} = req.cookies.userId;
+    const { phoneNumber} = req.params;
     try {
-        const result = await service.editProfile(userId, { name, email, phone });
+        const result = await service.editProfile(phoneNumber, { name, email, phone });
         successResponse(res, result )
     } catch (error) {
         errorResponse(res, error)

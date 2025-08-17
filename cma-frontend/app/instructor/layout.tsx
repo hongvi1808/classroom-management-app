@@ -32,7 +32,7 @@ const menu = [{
     },
     {
         text: 'Massage',
-        href: '/instructor/chat',
+        href: '/chat',
         icon: <ChatBubbleLeftIcon width={20} height={20} />,
     },
     ]

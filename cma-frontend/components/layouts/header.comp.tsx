@@ -8,8 +8,15 @@ import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import { Icon, Link } from '@mui/material';
-import { Bars3Icon, ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/16/solid';
+import { Avatar, Icon, Link, Menu, MenuItem } from '@mui/material';
+import { Bars3Icon, ChevronDoubleLeftIcon } from '@heroicons/react/16/solid';
+import { UserCircleIcon } from '@heroicons/react/24/solid';
+import { ButtonIcon } from '../button/button-icon.comp';
+import { useRouter } from 'next/navigation';
+import { SESSION_LOCAL_STORAGE_KEY } from '@/base/uitls';
+import { useMutation } from '@tanstack/react-query';
+import { authApis } from '@/base/apis/auth.api';
+import { showAlertError } from '@/base/ui/toaster';
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   borderWidth: 0,
@@ -43,8 +50,29 @@ export default function Header({
   menuOpen,
   onToggleMenu,
 }: HeaderProps) {
+  const router = useRouter();
   const theme = useTheme();
+ const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+const { mutate, isPending } = useMutation({
+        mutationFn: authApis.logout,
+        onError: (error) => {
+            console.error('Error calling api:', error);
+            showAlertError(error.message)
 
+        },
+        onSuccess: (data) => {
+          localStorage.removeItem(SESSION_LOCAL_STORAGE_KEY)
+          router.push('/login')
+        },
+    });
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   const handleMenuOpen = React.useCallback(() => {
     onToggleMenu(!menuOpen);
   }, [menuOpen, onToggleMenu]);
@@ -81,7 +109,7 @@ export default function Header({
 
   return (
     <AppBar color="inherit" position="absolute" sx={{ displayPrint: 'none' }}>
-      <Toolbar sx={{ backgroundColor: 'inherit', mx: { xs: -0.75, sm: -1 } }}>
+      <Toolbar sx={{ backgroundColor: 'inherit',}}>
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -113,7 +141,37 @@ export default function Header({
               </Stack>
             </Link>
           </Stack>
-        </Stack>
+            <Stack direction="row" alignItems="center">
+              <Tooltip title="Open settings">
+              <IconButton onClick={handleMenu} size='large' sx={{ p: 0 }}>
+                <Avatar
+            alt={'example'}
+            src=""
+            sx={{ width: 40, height: 40, margin: "0 auto" }}
+          />
+              </IconButton>
+            </Tooltip>
+                <Menu
+                 sx={{ mt: '45px' }}
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={() => router.push('/student/profile')}>Profile</MenuItem>
+                <MenuItem onClick={() => mutate()}>Logout</MenuItem>
+              </Menu>
+            </Stack>
+            </Stack>
       </Toolbar>
     </AppBar>
   );

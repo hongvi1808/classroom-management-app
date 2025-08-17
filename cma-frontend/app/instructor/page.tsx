@@ -1,5 +1,5 @@
 import StudentsPage from "./students/page";
 
-export default function Home() {
+export default function InstructorPage() {
   return ( <StudentsPage/> );
 }
