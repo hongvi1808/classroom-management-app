@@ -10,12 +10,11 @@ interface RequestOptions extends AxiosRequestConfig {
     hasAuth?: boolean
     isLoading?: boolean,
 }
-
 const getAuthHeader = () => {
     if (typeof window === 'undefined') return {}
     const token = localStorage.getItem(SESSION_LOCAL_STORAGE_KEY)
     const tokenObj = token ? JSON.parse(token) : null
-    return tokenObj ? { Authorization: `Bearer ${tokenObj.accessToekn}` } : {}
+    return  { Authorization: `Bearer ${tokenObj?.accessToken}` } 
 }
 
 async function request<T = any>(
@@ -47,7 +46,7 @@ const apiBase = {
     get: <T = any>(url: string, options?: RequestOptions) => request<T>('get', url, null, options),
     post: <T = any>(url: string, data: any, options?: RequestOptions) => request<T>('post', url, data, options),
     put: <T = any>(url: string, data: any, options?: RequestOptions) => request<T>('put', url, data, options),
-    delete: <T = any>(url: string, options?: RequestOptions) => request<T>('delete', url, null, options),
+    delete: <T = any>(url: string, options?: RequestOptions) => request<T>('delete', url, {}, options),
 }
 
 export default apiBase

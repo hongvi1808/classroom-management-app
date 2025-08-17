@@ -22,11 +22,11 @@ router.post('/validate-access-code', async (req, res) => {
     try {
         const result = await service.validateAccessCode(phoneNumber, accessCode);
         const refreshToken = await generateToken({ userId: result.userId, role: result.role }, process.env.REFRESH_TOKEN_SECRET, '7d')
-        res.cookie("refreshToken", refreshToken, {
+        res.cookie("refreshToken", refreshToken.token, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000
+            maxAge: 7 * 3600 * 1000
         });
         successResponse(res, result);
     } catch (error) {
@@ -49,11 +49,11 @@ router.post('/validate-email-access-code', async (req, res) => {
     try {
         const result = await service.validateEmail(email, accessCode);
         const refreshToken = await generateToken({ userId: result.userId, role: result.role }, process.env.REFRESH_TOKEN_SECRET, '7d')
-        res.cookie("refreshToken", refreshToken, {
+        res.cookie("refreshToken", refreshToken.token, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000
+            maxAge: 7 * 3600 * 1000
         });
         successResponse(res, result);
     } catch (error) {
@@ -76,11 +76,11 @@ router.post('/login', async (req, res) => {
         const result = await service.login(username, password);
 
         const refreshToken = await generateToken({ userId: result.userId, role: result.role }, process.env.REFRESH_TOKEN_SECRET, '7d')
-        res.cookie("refreshToken", refreshToken, {
+        res.cookie("refreshToken", refreshToken.token, {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000
+            maxAge: 7 * 3600 * 1000
         });
         successResponse(res, result);
     } catch (error) {
@@ -92,9 +92,9 @@ router.post('/logout', async (req, res) => {
 
         res.clearCookie("refreshToken", {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production',
             sameSite: "strict",
-            maxAge: 60 * 60 * 1000
+            maxAge: 7* 3600* 1000
         });
         successResponse(res, { message: 'Logged out successfully' });
     } catch (error) {
@@ -102,9 +102,9 @@ router.post('/logout', async (req, res) => {
     }
 });
 router.get('/refresh', async (req, res) => {
-    const { token } = req.cookies.refreshToken
+    const { refreshToken } = req.cookies
     try {
-        const result = await service.refresh(token);
+        const result = await service.refresh(refreshToken);
         successResponse(res, result);
     } catch (error) {
         errorResponse(res, error);

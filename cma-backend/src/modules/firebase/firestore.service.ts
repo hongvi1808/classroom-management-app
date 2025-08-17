@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import Container, { Service } from "typedi";
-import { doc, getDocs, collection, updateDoc, getDoc, query, startAt, startAfter, limit, deleteDoc, getCountFromServer, orderBy, setDoc, where, Firestore, getFirestore } from "firebase/firestore";
+import { doc, getDocs, collection, updateDoc, getDoc, query,  deleteDoc,  setDoc, where } from "firebase/firestore";
 import { FirebaseAppService } from "./firebase.service";
 
 @Service()
@@ -65,7 +65,7 @@ export class FirestoreService {
     public async findAllBy(collectionName: string, opt: { filed: string, op: any, value: any }) {
         try {
             const collection = this.getCollection(collectionName)
-            const queryZ = query(collection, orderBy('updatedAt'), where(opt.filed, opt.op, opt.value));
+            const queryZ = query(collection, where(opt.filed, opt.op, opt.value),  where('alive', '==', true));
             const res = await getDocs(queryZ);
             return res;
 

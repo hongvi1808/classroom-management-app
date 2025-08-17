@@ -1,4 +1,5 @@
-import { Service } from "typedi";
+import 'reflect-metadata';
+import Container, { Service } from "typedi";
 import { FirestoreService } from "../firebase/firestore.service";
 import { v7 as uuidv7 } from 'uuid';
 import { USER_COLLECTION_NAME, UserCollection } from "../firebase/schema";
@@ -9,12 +10,12 @@ import { ROLE_STUDENT } from "../../utils/constant";
 export class InstructorService {
     private firestoreService: FirestoreService;
     private mailService: MailService;
-    constructor(firestoreService: FirestoreService, mailService: MailService) {
-        this.firestoreService = firestoreService;
-        this.mailService = mailService;
+    constructor() {
+        this.firestoreService = Container.get(FirestoreService);
+        this.mailService = Container.get(MailService);
     }
 
-    public async addStudent(data: { name: string, phoneNumber: string, email: string }) {
+    public async addStudent(data: { name: string, phoneNumber: string, email: string, role: string }) {
         const dataStudent: UserCollection = {
             id: uuidv7(),
             name: data.name,
@@ -24,7 +25,7 @@ export class InstructorService {
             phoneNumber: data.phoneNumber,
             alive: true,
             lesson: [],
-            role: ROLE_STUDENT,
+            role: data.role || ROLE_STUDENT ,
             createdAt: new Date().getTime(),
             updatedAt: new Date().getTime()
         }
@@ -33,8 +34,8 @@ export class InstructorService {
         await this.mailService.sendMail( data.email,'Xác thực tài khoản',mailContent);
         return res
     }
-    public async assignLesson(data: { studentPhone: string, title: string, description: string }) {
-        const studentDoc = await this.getStudentByPhone(data.studentPhone);
+    public async assignLesson(data: { phoneNumber: string, title: string, description: string }) {
+        const studentDoc = await this.getStudentByPhone(data.phoneNumber);
         const assigned = (studentDoc?.lessons || [])
         assigned.push({
                 id: uuidv7(),
@@ -73,7 +74,8 @@ export class InstructorService {
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, updatedData);
     }
     public async deleteStudent(phone: string) {
-        const studentDoc = await this.getStudentByPhone(phone);
-        return this.firestoreService.delete(USER_COLLECTION_NAME, studentDoc.id);
+        const studentDoc : UserCollection = await this.getStudentByPhone(phone);
+        const updatedData: any = { updatedAt: new Date().getTime(), alive: false };
+        return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, updatedData);
     }
 }

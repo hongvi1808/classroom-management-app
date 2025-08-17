@@ -26,7 +26,7 @@ export function TextFiledControlBase(props: ITextFieldControlBaseProps) {
             setErrorMessage(message)
         }
     }
-    return <FormControl>
+    return <FormControl fullWidth>
         {!!props.label && <FormLabel htmlFor={props.name}>{props.label}</FormLabel>}
         <TextFieldBase
             autoComplete={props.name}

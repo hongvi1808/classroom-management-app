@@ -8,5 +8,18 @@ export const instructorApis = {
     },
     getStudents: () => {
         return apiBase.get(`${urlDefault}/students`, {hasAuth: true});
-    }
+    },
+    getStudentByPhone: (phone: string) => {
+        return apiBase.get(`${urlDefault}/student/${phone}`, {hasAuth: true});
+    },
+    updateStudent: (data: any) => {
+        return apiBase.put(`${urlDefault}/student/${data.phoneNumber}`,data, {hasAuth: true});
+    },
+    deleteStudent: (phoneNumber: any) => {
+        return apiBase.delete(`${urlDefault}/student/${phoneNumber}`, {hasAuth: true});
+    },
+    assignLesson: (data: any) => {
+        return apiBase.post(`${urlDefault}/assign-lesson`,data, {hasAuth: true});
+    },
+
 }

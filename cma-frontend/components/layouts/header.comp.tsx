@@ -9,7 +9,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { Icon, Link } from '@mui/material';
-import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon, ChevronLeftIcon } from '@heroicons/react/16/solid';
+import { Bars3Icon, ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/16/solid';
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   borderWidth: 0,
@@ -66,7 +66,7 @@ export default function Header({
               onClick={handleMenuOpen}
             >
               {!isExpanded ? <Icon sx={{ justifyContent: 'center', alignContent: 'center' }} >
-                    <ChevronDoubleRightIcon width={20} height={20} color="primary" />
+                    <Bars3Icon width={20} height={20} color="primary" />
                 </Icon>
                  : <Icon sx={{ justifyContent: 'center', alignContent: 'center' }} >
                     <ChevronDoubleLeftIcon width={20} height={20} color="primary" />

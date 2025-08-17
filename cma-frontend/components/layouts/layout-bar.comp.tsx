@@ -3,8 +3,7 @@
 import { Box, Toolbar, useMediaQuery, useTheme, } from "@mui/material"
 import Header from "./header.comp"
 import { useState } from "react";
-import { BookOpenIcon, ChatBubbleLeftIcon, StarIcon, UserGroupIcon } from "@heroicons/react/16/solid";
-import { useRouter } from "next/navigation";
+import { BookOpenIcon, ChatBubbleLeftIcon, UserGroupIcon } from "@heroicons/react/16/solid";
 import { Sitebar } from "./sitebar.comp";
 
 export function LayoutInstructor({
@@ -46,15 +45,15 @@ export function LayoutInstructor({
             }}
         >
             <Toolbar sx={{ displayPrint: 'none' }} />
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    p: 3,
-                    transition: "margin 0.3s",
-                    marginLeft: isOverSmViewport ? open ?'240px' : '120px': 0,
-                }}
-            >
+        <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          transition: "margin 0.3s",
+          marginLeft: isOverSmViewport ? open ?'240px' : '120px': 0,
+        }}
+      >
                 {children}
             </Box>
         </Box>

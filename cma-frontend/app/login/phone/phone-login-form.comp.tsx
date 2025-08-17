@@ -1,7 +1,7 @@
 'use client'
 import { authApis } from "@/base/apis/auth.api"
 import { showAlertError } from "@/base/ui/toaster"
-import { validRequire } from "@/base/uitls"
+import { validPhone, validRequire } from "@/base/uitls"
 import { TextFiledControlBase } from "@/components/textfield/textfield.comp"
 import { Box, Button } from "@mui/material"
 import { useMutation } from "@tanstack/react-query"
@@ -23,10 +23,6 @@ export function PhoneLoginForm() {
         },
     });
 
-    const validPhone = (value: string) => {
-        if (validRequire(value)) return validRequire(value)
-        if (!(/^(0|\+84)(\d{9})$/).test(value)) return 'Your number phone is invalid (in Vietnam)'
-    }
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
