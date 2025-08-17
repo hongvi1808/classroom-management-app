@@ -2,7 +2,6 @@ import "reflect-metadata";
 import Container, { Service } from "typedi";
 import { FirestoreService } from "../firebase/firestore.service";
 import { TwilioService } from "../twilio/twilio.service"
-import { v7 as uuidv7 } from 'uuid';;
 import { formatPhoneNumber, gen6DigitCode } from "../../utils/function";
 import { generateToken, verifyToken } from "../../utils/jwt";
 import { ROLE_INSTRCTOR } from "../../utils/constant";
@@ -27,7 +26,7 @@ export class AuthenticationService {
         // find user by phone number
         const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'phoneNumber', op: '==', value: phone });
         if (!userDoc) {
-            const id = uuidv7();
+            const id = phone;
             await this.firestoreService.create(USER_COLLECTION_NAME, {
                 phoneNumber: phone,
                 id,

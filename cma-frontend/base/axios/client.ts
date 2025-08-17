@@ -14,10 +14,21 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    if (error.response.data.error.code === 'TOKEN_EXPIRED') {
+      try {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
+        withCredentials: true,
+      });
+      if (res.data.success)
+        localStorage.setItem(SESSION_LOCAL_STORAGE_KEY, JSON.stringify(res.data.data))
+    } catch (err) {
+      console.error("Refresh token failed", err);
+    }
+    }
     if (error.response?.status > 400) {
       showAlertError(error.response.data.error.message)
-      console.warn('Unauthorized, redirecting to login..., ', error.response)
+      console.warn( error.response)
     }
     return Promise.reject(error)
   }
@@ -43,5 +54,7 @@ axiosClient.interceptors.request.use(async (config) => {
 
   return config;
 });
+
+
 
 export default axiosClient

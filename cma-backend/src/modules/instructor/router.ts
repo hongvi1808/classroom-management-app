@@ -18,9 +18,9 @@ router.post('/add-student', async (req, res) => {
 });
 
 router.post('/assign-lesson', async (req, res) => {
-    const { phoneNumber, title, description } = req.body;
+    const { studentPhones, title, description } = req.body;
     try {
-        const result = await service.assignLesson({ phoneNumber, title, description });
+        const result = await service.assignLesson({ studentPhones, title, description });
         successResponse(res, result )
     } catch (error) {
         errorResponse(res, error)
@@ -46,7 +46,7 @@ router.get('/student/:phone', async  (req, res) => {
     }
 });
 
-router.put('/edit-student:phone', async (req, res) => {
+router.put('/edit-student/:phone', async (req, res) => {
     const {  phone, } = req.params;
     try {
         const result = await service.editStudent(phone, req.body);

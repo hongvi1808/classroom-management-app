@@ -8,25 +8,12 @@ import { Sitebar } from "./sitebar.comp";
 
 export function LayoutInstructor({
     children,
+    menu
 }: {
     children: React.ReactNode;
+    menu:any
 }) {
-    const instructorMenu = [{
-        text: 'Manage Student',
-        href: '/instructor/students',
-        icon: <UserGroupIcon width={20} height={20} />,
-    },
-    {
-        text: 'Manage Lesson',
-        href: '/instructor/lessons',
-        icon: <BookOpenIcon width={20} height={20} />,
-    },
-    {
-        text: 'Massage',
-        href: '/instructor/chat',
-        icon: <ChatBubbleLeftIcon width={20} height={20} />,
-    },
-    ]
+    
     const theme = useTheme();
        const isOverSmViewport = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -34,7 +21,7 @@ export function LayoutInstructor({
 
     return <Box sx={{ display: "flex" }}>
         <Header menuOpen={open} onToggleMenu={(op) => setOpen(op)} />
-        <Sitebar menus={instructorMenu} open={open} isOverSmViewport={isOverSmViewport} />
+        <Sitebar menus={menu} open={open} isOverSmViewport={isOverSmViewport} />
 
         <Box
             sx={{

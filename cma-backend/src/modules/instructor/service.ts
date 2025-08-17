@@ -5,6 +5,7 @@ import { v7 as uuidv7 } from 'uuid';
 import { USER_COLLECTION_NAME, UserCollection } from "../firebase/schema";
 import { MailService } from "../mail/mail.service";
 import { ROLE_STUDENT } from "../../utils/constant";
+import { formatPhoneNumber } from '../../utils/function';
 
 @Service()
 export class InstructorService {
@@ -17,41 +18,50 @@ export class InstructorService {
 
     public async addStudent(data: { name: string, phoneNumber: string, email: string, role: string }) {
         const dataStudent: UserCollection = {
-            id: uuidv7(),
+            id: formatPhoneNumber(data.phoneNumber) ,
             name: data.name,
             email: data.email,
             password: '', // Assuming password is not required here
             username: '', // Assuming username is not required here
-            phoneNumber: data.phoneNumber,
+            phoneNumber:formatPhoneNumber(data.phoneNumber),
             alive: true,
-            lesson: [],
-            role: data.role || ROLE_STUDENT ,
+            lessons: [],
+            role: data.role || ROLE_STUDENT,
             createdAt: new Date().getTime(),
             updatedAt: new Date().getTime()
         }
         const res = await this.firestoreService.create(USER_COLLECTION_NAME, dataStudent);
         const mailContent = `<p>Click <a href=${process.env.SECURE_ACCOUNT_PAGE_LINK}/${dataStudent.id} >tại đây</a> để xác thực tài khoản </p> `
-        await this.mailService.sendMail( data.email,'Xác thực tài khoản',mailContent);
+        await this.mailService.sendMail(data.email, 'Xác thực tài khoản', mailContent);
         return res
     }
-    public async assignLesson(data: { phoneNumber: string, title: string, description: string }) {
-        const studentDoc = await this.getStudentByPhone(data.phoneNumber);
-        const assigned = (studentDoc?.lessons || [])
-        assigned.push({
-                id: uuidv7(),
-                title: data.title,
-                description: data.description,
-                status: 'pending',
-                deliveredAt: new Date().getTime(),
-                completedAt: 0
+    public async assignLesson(data: { studentPhones: string[], title: string, description: string }) {
+        const datas = data.studentPhones.map(async (i: string) => {
+            const found = await this.firestoreService.findById(USER_COLLECTION_NAME, i)
+            if (!found.exists()) return null;
+            const lessonFound = found.data().lessons  ||[]
+            lessonFound.push({
+                    id: uuidv7(),
+                    title: data.title,
+                    description: data.description,
+                    status: 'pending',
+                    deliveredAt: new Date().getTime(),
+                    completedAt: 0
 
-            })
+                })
+            return ({
+            id: i,
+            data: {
+                updatedAt: new Date().getTime(),
+                lessons: lessonFound
+            }
+        })
 
-        return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, {
-            updatedAt: new Date().getTime(),
-            lessons: assigned
+        })
+          const resultData = await Promise.all(datas);
 
-        });
+        await this.firestoreService.updateMany(USER_COLLECTION_NAME, resultData.filter((r) => r !== null))
+        return true;
     }
     public async getStudents() {
         const students = await this.firestoreService.findAllBy(USER_COLLECTION_NAME, { filed: 'role', op: '==', value: ROLE_STUDENT });
@@ -74,7 +84,7 @@ export class InstructorService {
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, updatedData);
     }
     public async deleteStudent(phone: string) {
-        const studentDoc : UserCollection = await this.getStudentByPhone(phone);
+        const studentDoc: UserCollection = await this.getStudentByPhone(phone);
         const updatedData: any = { updatedAt: new Date().getTime(), alive: false };
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, updatedData);
     }

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import Container, { Service } from "typedi";
-import { doc, getDocs, collection, updateDoc, getDoc, query,  deleteDoc,  setDoc, where } from "firebase/firestore";
+import { doc, getDocs, collection, updateDoc, getDoc, query, deleteDoc, setDoc, where, writeBatch } from "firebase/firestore";
 import { FirebaseAppService } from "./firebase.service";
 
 @Service()
@@ -28,6 +28,23 @@ export class FirestoreService {
             const collection = this.getCollection(collectionName)
             const res = await updateDoc(doc(collection, id), data);
             return res;
+
+        } catch (error) {
+            console.error('Error updating document:', error);
+            throw error;
+
+        }
+    }
+    public async updateMany(collectionName: string, datas: {id: string, data:any}[]) {
+        try {
+            const collection = this.getCollection(collectionName)
+            const batch = writeBatch(this.firebaseService.getStore());
+            datas.forEach((da) => {
+                const docRef = doc(collection, da.id);
+                batch.update(docRef, da.data);
+            });
+            await batch.commit();
+            return true;
 
         } catch (error) {
             console.error('Error updating document:', error);
@@ -65,7 +82,7 @@ export class FirestoreService {
     public async findAllBy(collectionName: string, opt: { filed: string, op: any, value: any }) {
         try {
             const collection = this.getCollection(collectionName)
-            const queryZ = query(collection, where(opt.filed, opt.op, opt.value),  where('alive', '==', true));
+            const queryZ = query(collection, where(opt.filed, opt.op, opt.value), where('alive', '==', true));
             const res = await getDocs(queryZ);
             return res;
 

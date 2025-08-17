@@ -7,7 +7,7 @@ export interface UserCollection {
     username: string;
     phoneNumber: string;
     alive: boolean;
-    lesson: LessonCollection[] | any[]
+    lessons: LessonCollection[] | any[]
     createdAt: number;
     updatedAt: number;
     accessCode?: string;
