@@ -31,8 +31,7 @@ export function AutocompleteBase<T, Multiple extends boolean | undefined = false
   return (<>
     <Autocomplete
       fullWidth
-      // {...props}
-      options={props.options}
+      {...props}
       sx={!props.multiple ? {
         "& .MuiOutlinedInput-root": {
           paddingY: 0,
