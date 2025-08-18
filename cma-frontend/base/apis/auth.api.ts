@@ -12,8 +12,17 @@ export const authApis = {
     loginEmail: (data: any) => {
         return apiBase.post(`${urlDefault}/login-with-email`, data);
     },
-    verifyEmail: (data: any) => {
+    verifyEmailByCode: (data: any) => {
         return apiBase.post(`${urlDefault}/validate-email-access-code`, data);
+    },
+    verifyEmail: (data: any) => {
+        return apiBase.put(`${urlDefault}/verify-email/${data}`, {});
+    },
+    setupAccount: (data: any) => {
+        return apiBase.put(`${urlDefault}/account-setup/${data?.id}`, data);
+    },
+    loginAccount: (data: any) => {
+        return apiBase.post(`${urlDefault}/login`, data);
     },
     logout: () => {
         return apiBase.post(`${urlDefault}/logout`, {});

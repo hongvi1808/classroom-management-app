@@ -61,7 +61,16 @@ router.post('/validate-email-access-code', async (req, res) => {
     }
 });
 
-router.post('/account-setup/:id', async (req, res) => {
+router.put('/verify-email/:id', async (req, res) => {
+    const { id, } = req.params;
+    try {
+        const result = await service.verifyAccountByEmail(id);
+        successResponse(res, result);
+    } catch (error) {
+        errorResponse(res, error);
+    }
+});
+router.put('/account-setup/:id', async (req, res) => {
     const { id, } = req.params;
     try {
         const result = await service.setupAccount(id, req.body);

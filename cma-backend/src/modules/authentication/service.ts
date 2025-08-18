@@ -48,7 +48,7 @@ export class AuthenticationService {
         const phone = formatPhoneNumber(phoneNumber);
         const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'phoneNumber', op: '==', value: phone });
         if (accessCode === userDoc?.accessCode) {
-            await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', active:true, alive:true, updatedAt: new Date().getTime() });
+            await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', active: true, alive: true, updatedAt: new Date().getTime() });
             const { token, expireAt } = await generateToken({ phoneNumber: userDoc.id, role: userDoc.role });
             return { accessToken: token, phoneNumber: userDoc.id, role: userDoc.role, expireAt };
         } else {
@@ -71,7 +71,7 @@ export class AuthenticationService {
     public async validateEmail(email: string, accessCode: string) {
         const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'email', op: '==', value: email });
         if (userDoc && userDoc.accessCode === accessCode) {
-            await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', active:true, alive:true, updatedAt: new Date().getTime() });
+            await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', active: true, alive: true, updatedAt: new Date().getTime() });
             const { token, expireAt } = await generateToken({ phoneNumber: userDoc.id, role: userDoc.role });
             return { accessToken: token, phoneNumber: userDoc.id, role: userDoc.role, expireAt };
         } else {
@@ -79,6 +79,18 @@ export class AuthenticationService {
         }
     }
 
+    public async verifyAccountByEmail(id: string) {
+        const userDoc = await this.firestoreService.findById(USER_COLLECTION_NAME, id);
+        if (!userDoc.exists()) {
+            throw { message: 'Verify email failed', code: 'FAILED_VERIFY' };
+        }
+        await this.firestoreService.update(USER_COLLECTION_NAME, id, {
+            isVerified: true,
+            active: true, alive: true,
+            updatedAt: new Date().getTime()
+        });
+        return true;
+    }
     public async setupAccount(id: string, body: { username: string, password: string }) {
         const userDoc = await this.firestoreService.findById(USER_COLLECTION_NAME, id);
         const hashedPassword = await bcrypt.hash(body.password, 10)
@@ -89,19 +101,21 @@ export class AuthenticationService {
             isVerified: true,
             username: body.username,
             password: hashedPassword,
-             active:true, alive:true,
+            active: true, alive: true,
             updatedAt: new Date().getTime()
         });
         return true;
     }
     public async login(username: string, password: string) {
         const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'username', op: '==', value: username });
-        if (!userDoc.exists()) {
+        if (!userDoc) {
             throw { message: 'Username is not existed', code: 'USERNAME_NOTE_EXISTED' };
         }
-
-        const hashedPassword = await bcrypt.hash(password, 10)
-        if (userDoc.password !== hashedPassword) {
+        const isPasswordValid = await bcrypt.compare(
+            userDoc.password,
+            password,
+        );
+        if (isPasswordValid) {
             throw { message: 'Password is not correct', code: 'PASSWORD_NOT_CORRECT' };
         }
 

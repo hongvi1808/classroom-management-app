@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 export function VerifyEmailForm() {
     const router = useRouter();
     const { mutate, isPending } = useMutation({
-        mutationFn: authApis.verifyPhone,
+        mutationFn: authApis.verifyEmailByCode,
         onError: (error) => {
             console.error('Error calling api:', error);
             showAlertError(error.message)
