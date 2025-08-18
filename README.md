@@ -4,11 +4,18 @@
 1. ### How to run?: See that in README.md file of cma-backend folder
 2. ### Techstack:
 - Expressjs, jwt, twilio, nodemailer, firebase (Firestore Database)
+3. ### Project structure:
+<img width="373" height="674" alt="image" src="https://github.com/user-attachments/assets/9471ceae-cd25-4971-afb4-ffc35394ab56" />
+
 
 ## Frontend: cma-frontend
 1. ### How to run?: See that in README.md file of cma-backend folder
 2. ### Techstack:
 - Nestjs, MUI, React Query, axios, firebase (Realtime Database), Sweetalert2, Heroicons
+3. ### Project structure
+  <img width="366" height="846" alt="image" src="https://github.com/user-attachments/assets/26f586a4-ee6f-4fc8-a85f-b3a73ac21605" />
+
+
 ## Instructor Role
 <img width="1918" height="918" alt="image" src="https://github.com/user-attachments/assets/57dda596-0827-4d4a-896e-6bf6fd9e3cd5" />
 <img width="1431" height="589" alt="image" src="https://github.com/user-attachments/assets/4c489a6c-88dc-4959-a77e-6489d448161e" />
