@@ -17,7 +17,7 @@ export default function EmailLoginPage() {
       >
         {'Log in'}
       </Typography>
-        <Typography textAlign={'center'} sx={{ color: 'text.secondary' }}>{'Please enter your phone to log in'}</Typography>
+        <Typography textAlign={'center'} sx={{ color: 'text.secondary' }}>{'Please enter your email to log in'}</Typography>
       </Box>
       <EmailLoginForm />
       
