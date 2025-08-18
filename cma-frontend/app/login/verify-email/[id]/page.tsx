@@ -39,7 +39,7 @@ export default function VerifyEmailAccount({ params }: Props) {
                 {'Verify email'}
             </Typography>
             <Divider>
-                <Typography sx={{ color: 'text.secondary' }}>{'Please enter your email to sign in'}</Typography>
+                <Typography sx={{ color: 'text.secondary' }}>{'Please verify your email to login'}</Typography>
             </Divider>
         </Box>
         <Button
