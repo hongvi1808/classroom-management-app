@@ -7,9 +7,10 @@ export class MailService {
     private transport: any
     constructor() {
         this.transport = nodemailer.createTransport({
+            service: 'gmail',
             host: process.env.SMTP_HOST,    
-            port: parseInt(process.env.SMTP_PORT || '456'),
-            secure: true,
+            port: parseInt(process.env.STMP_PORT || '587'),
+            secure: process.env.NODE_ENV === 'production',
             auth: {
                 user: process.env.SMTP_USER,
                 pass: process.env.STMP_PASSWORD,
@@ -19,7 +20,7 @@ export class MailService {
     public async sendMail(to: string, subject: string, text: string) {
         try {
             const mailOptions = {
-                from: 'no-reply@cma.com',
+                from: process.env.SMTP_USER,
                 to,
                 subject,
                 text,
