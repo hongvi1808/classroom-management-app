@@ -41,7 +41,7 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
             renderCell: (params) => (
                 <Chip
                     label={params.row.status}
-                    color={params.row.status === 'complete' ? "success" : "warning"}
+                    color={params.row.status === 'done' ? "success" : "warning"}
                     size="medium"
                     variant="filled"
                 />
