@@ -1,39 +1,41 @@
-import { Box, Divider, Icon, Link, Stack, Typography } from "@mui/material";
-import { ArrowLeftIcon } from "@heroicons/react/16/solid";
-import { ButtonBack } from "@/components/button/button-back.comp";
-import { VerifyEmailForm } from "./verify-email-form";
+'use client'
+import { validRequire } from "@/base/uitls"
+import { TextFiledControlBase } from "@/components/textfield/textfield.comp"
+import { Box, Button } from "@mui/material"
 
-export default function VerifyEmailPage() {
-    return (
-        <Stack spacing={4} sx={{ justifyContent: "center", padding: 2, }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <ButtonBack />
-                <Typography
-                    component="h1"
-                    variant="h4"
-                    textAlign={'center'}
-                    sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
-                >
-                    {'Verify email'}
-                </Typography>
-                <Divider>
-                    <Typography sx={{ color: 'text.secondary' }}>{'Please enter your email to sign in'}</Typography>
-                </Divider>
-            </Box>
-            <VerifyEmailForm />
-
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Typography sx={{ textAlign: 'center' }}>
-                    {"Hasn't received an email? "}
-                    <Link
-                        href=""
-                        variant="body2"
-                        sx={{ alignSelf: 'center' }}
-                    >
-                        {'Resend'}
-                    </Link>
-                </Typography>
-            </Box>
-        </Stack>
-    )
+export function VerifyEmail() {
+    
+    const validUsername = (value: string) => {
+       if (validRequire(value)) return validRequire(value)
+        if (!(/^[a-z0-9]+$/).test(value)) return 'Use only letters and numbers, no spaces or accents'
+    }
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        const data =  Object.fromEntries(formData.entries())
+        // TODO call api post
+    }
+    return <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+    >
+        <TextFiledControlBase
+            name='username'
+            getErrorMessage={validUsername}
+            inputProps={{placeholder: 'Your username', required: true,}}
+        />
+        <TextFiledControlBase
+            name='password'
+            getErrorMessage={validRequire}
+            inputProps={{placeholder: 'Your password', type: 'password', required: true}}
+        />
+        <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+        >
+            {'Submit'}
+        </Button>
+    </Box>
 }

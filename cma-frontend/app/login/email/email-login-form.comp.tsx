@@ -11,7 +11,7 @@ export function EmailLoginForm() {
     const router = useRouter();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: authApis.loginPhone,
+        mutationFn: authApis.loginEmail,
         onError: (error) => {
             console.error('Error calling api:', error);
             showAlertError(error.message)
@@ -19,7 +19,7 @@ export function EmailLoginForm() {
         },
         onSuccess: (data) => {
             localStorage.setItem('email', data.email)
-            router.push('/login/verify-email')
+            router.push('/login/verify-email-by-code')
         },
     });
 

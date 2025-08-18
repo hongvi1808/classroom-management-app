@@ -1,6 +1,5 @@
 'use client'
 import { ROLE_INSTRCTOR, ROLE_STUDENT, SESSION_LOCAL_STORAGE_KEY } from "@/base/uitls";
-import { Box, CircularProgress } from "@mui/material";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 

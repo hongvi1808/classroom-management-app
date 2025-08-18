@@ -12,7 +12,7 @@ export class MailService {
             port: parseInt(process.env.STMP_PORT || '587'),
             secure: process.env.NODE_ENV === 'production',
             auth: {
-                user: process.env.SMTP_USER,
+                user: process.env.STMP_USER,
                 pass: process.env.STMP_PASSWORD,
             },
         });
@@ -20,7 +20,6 @@ export class MailService {
     public async sendMail(to: string, subject: string, text: string) {
         try {
             const mailOptions = {
-                from: process.env.SMTP_USER,
                 to,
                 subject,
                 text,
