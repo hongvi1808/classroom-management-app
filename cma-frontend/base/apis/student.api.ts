@@ -15,5 +15,8 @@ export const studentApis = {
     editProfile: (data: any) => {
         return apiBase.put(`${urlDefault}/edit-profile/${data.id}`, data, { hasAuth: true });
     },
+    getInstructorList: () => {
+       return apiBase.get(`${urlDefault}/instructor`,{ hasAuth: true });
+    },
 
 }

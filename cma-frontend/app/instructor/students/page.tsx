@@ -7,8 +7,8 @@ export default function StudentsPage() {
       <Stack direction={'column'} spacing={4} sx={{marginLeft: 2}}>
         <Typography component={'h1'} variant="h6">{'Student Management'}</Typography>
         <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
-        <Stack direction={'row'} spacing={2} justifyContent={'space-between'} sx={{marginLeft: 2}}>
-          <Typography component={'h1'} variant="h4">{'Students'}</Typography>
+        <Stack direction={'row'} spacing={2} justifyContent={'space-between'} sx={{marginLeft: 2, marginBottom: 2}}>
+          <Typography component={'h1'} variant="h4">{'Student List'}</Typography>
           <AddStudentForm/>
         </Stack>
           

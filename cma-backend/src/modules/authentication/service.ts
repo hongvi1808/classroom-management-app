@@ -41,7 +41,7 @@ export class AuthenticationService {
         })
         // send code to twilio
         await this.twilioService.sendSMS(`+${phone}`, `Your access code is: ${codeDigit}`);
-        return { phoneNumber: phone };
+        return { phoneNumber: phone, code: codeDigit };
     }
 
     public async validateAccessCode(phoneNumber: string, accessCode: string) {
@@ -114,7 +114,7 @@ export class AuthenticationService {
         if (!payload.phoneNumber || !payload.role) throw { code: 'UNAUTHEN', message: 'Refresh token is error' }
 
         const { token, expireAt } = await generateToken({ phoneNumber: payload.id, role: payload.role });
-        return { accessToken: token, phoneNumber: payload.id, role: payload.role, expireAt };
+        return { accessToken: token, phoneNumber: payload.phoneNumber, role: payload.role, expireAt };
     }
 
 }

@@ -3,6 +3,7 @@ import { FirestoreService } from "../firebase/firestore.service";
 import { InstructorService } from "../instructor/service";
 import { USER_COLLECTION_NAME } from "../firebase/schema";
 import { formatPhoneNumber } from "../../utils/function";
+import { ROLE_INSTRCTOR } from "../../utils/constant";
 
 @Service()
 export class StudentService {
@@ -44,4 +45,8 @@ export class StudentService {
         if (data.email) updatedData.email = data.email;
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentId, updatedData);
     }
+    public async getInstructor() {
+            const students = await this.firestoreService.findAllBy(USER_COLLECTION_NAME, { filed: 'role', op: '==', value: ROLE_INSTRCTOR });
+            return students.docs.map(doc => doc.data());
+        }
 }

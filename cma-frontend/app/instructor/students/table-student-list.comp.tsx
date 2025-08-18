@@ -16,8 +16,7 @@ export function TableStudentList() {
     const { isLoading, data } = useQuery({
         queryKey: ['students'],
         queryFn: instructorApis.getStudents
-    }
-    );
+    } );
     const { mutate, isPending } = useMutation({
         mutationFn: instructorApis.deleteStudent,
         onError: (error) => {

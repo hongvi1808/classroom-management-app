@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 export const validRequire = (value: string) => {
     if (!value.trim()) return '*Required field'
 }
@@ -20,4 +22,9 @@ export const getSessionLocal = () => {
     const token = localStorage.getItem(SESSION_LOCAL_STORAGE_KEY)
     const tokenObj = token ? JSON.parse(token) : null
     return tokenObj
+}
+
+export const createRoomIdChat = (user1: string, user2: string) =>{
+  const sorted = [user1, user2].sort().join("_");
+  return crypto.createHash("md5").update(sorted).digest("hex");
 }
