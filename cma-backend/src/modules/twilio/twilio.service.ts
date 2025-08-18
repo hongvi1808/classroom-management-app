@@ -18,7 +18,8 @@ export class TwilioService {
             await this.client.messages.create({
                 body,
                 to,
-                messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID || '',
+                from: process.env.TWILIO_FROM_TO || ''
+                // messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID || '',
             });
             console.log(`SMS sent to ${to}`);
         } catch (error) {

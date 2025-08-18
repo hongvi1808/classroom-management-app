@@ -9,7 +9,7 @@ export const generateToken = (
 ) : Promise<{ token: string; expireAt: number }>=> {
     const options: jwt.SignOptions = {
       algorithm: 'HS256',
-      expiresIn: expiresIn|| '1h',
+      expiresIn: expiresIn|| '24h',
     };
   return new Promise((resolve, reject) => {
     jwt.sign(payload,

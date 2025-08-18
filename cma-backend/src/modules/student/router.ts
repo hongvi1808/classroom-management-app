@@ -44,6 +44,14 @@ router.put('/edit-profile/:phoneNumber', async (req, res) => {
         errorResponse(res, error)
     }
 });
+router.get('/instructor', async (req, res) => {
+    try {
+        const result = await service.getInstructor();
+        successResponse(res, result )
+    } catch (error) {
+        errorResponse(res, error)
+    }
+});
 
 
 

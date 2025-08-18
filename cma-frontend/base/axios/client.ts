@@ -15,7 +15,7 @@ const axiosClient = axios.create({
 axiosClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response.data.error.code === 'TOKEN_EXPIRED') {
+    if (error.response?.data?.error?.code === 'TOKEN_EXPIRED') {
       try {
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
         withCredentials: true,

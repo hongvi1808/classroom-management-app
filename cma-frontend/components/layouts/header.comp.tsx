@@ -9,7 +9,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import { Avatar, Icon, Link, Menu, MenuItem } from '@mui/material';
-import { Bars3Icon, ChevronDoubleLeftIcon } from '@heroicons/react/16/solid';
+import { Bars3Icon, ChevronDoubleLeftIcon, PowerIcon, UserIcon } from '@heroicons/react/16/solid';
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { ButtonIcon } from '../button/button-icon.comp';
 import { useRouter } from 'next/navigation';
@@ -17,6 +17,7 @@ import { SESSION_LOCAL_STORAGE_KEY } from '@/base/uitls';
 import { useMutation } from '@tanstack/react-query';
 import { authApis } from '@/base/apis/auth.api';
 import { showAlertError } from '@/base/ui/toaster';
+import { ButtonIconText } from '../button/buton-iconText.comp';
 
 const AppBar = styled(MuiAppBar)(({ theme }) => ({
   borderWidth: 0,
@@ -167,8 +168,12 @@ const { mutate, isPending } = useMutation({
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={() => router.push('/student/profile')}>Profile</MenuItem>
-                <MenuItem onClick={() => mutate()}>Logout</MenuItem>
+                <MenuItem onClick={() => router.push('/student/profile')}>
+                  <ButtonIconText buttonProps={{ variant: 'text', color: 'inherit'}} iconComp={<UserIcon height={20} width={20}/>} title='Profile'/>
+                </MenuItem>
+                <MenuItem onClick={() => mutate()}>
+                  <ButtonIconText buttonProps={{loading: isPending, variant: 'text', color: 'inherit'}} iconComp={<PowerIcon height={20} width={20}/>} title='Logout'/>
+                </MenuItem>
               </Menu>
             </Stack>
             </Stack>

@@ -2,6 +2,8 @@ import Container, { Service } from "typedi";
 import { FirestoreService } from "../firebase/firestore.service";
 import { InstructorService } from "../instructor/service";
 import { USER_COLLECTION_NAME } from "../firebase/schema";
+import { formatPhoneNumber } from "../../utils/function";
+import { ROLE_INSTRCTOR } from "../../utils/constant";
 
 @Service()
 export class StudentService {
@@ -39,8 +41,12 @@ export class StudentService {
     public async editProfile(studentId: string, data: { name: string, email: string, phone: string }) {
         const updatedData: any = { updatedAt: new Date().getTime() };
         if (data.name) updatedData.name = data.name;
-        if (data.phone) updatedData.phoneNumber = data.phone;
+        if (data.phone) updatedData.phoneNumber = formatPhoneNumber(data.phone);
         if (data.email) updatedData.email = data.email;
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentId, updatedData);
     }
+    public async getInstructor() {
+            const students = await this.firestoreService.findAllBy(USER_COLLECTION_NAME, { filed: 'role', op: '==', value: ROLE_INSTRCTOR });
+            return students.docs.map(doc => doc.data());
+        }
 }

@@ -1,4 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend: cma-frontend
+## Install 
+### Yarn
+```bash
+npm install --global yarn
+```
+## Run project
+1. ### Install node_module
+```bash
+yarn install
+```
+2. ### Run project
+#### for .env.example file
+```bash
+yarn start
+```
+
+#### for .env (for developer)
+```bash
+yarn dev
+```
+
 
 ## Getting Started
 
