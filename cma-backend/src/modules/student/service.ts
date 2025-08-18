@@ -2,6 +2,7 @@ import Container, { Service } from "typedi";
 import { FirestoreService } from "../firebase/firestore.service";
 import { InstructorService } from "../instructor/service";
 import { USER_COLLECTION_NAME } from "../firebase/schema";
+import { formatPhoneNumber } from "../../utils/function";
 
 @Service()
 export class StudentService {
@@ -39,7 +40,7 @@ export class StudentService {
     public async editProfile(studentId: string, data: { name: string, email: string, phone: string }) {
         const updatedData: any = { updatedAt: new Date().getTime() };
         if (data.name) updatedData.name = data.name;
-        if (data.phone) updatedData.phoneNumber = data.phone;
+        if (data.phone) updatedData.phoneNumber = formatPhoneNumber(data.phone);
         if (data.email) updatedData.email = data.email;
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentId, updatedData);
     }

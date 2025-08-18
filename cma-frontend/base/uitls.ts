@@ -3,7 +3,7 @@ export const validRequire = (value: string) => {
 }
 export  const validPhone = (value: string) => {
         if (validRequire(value)) return validRequire(value)
-        if (!(/^(0|\+84)(\d{11})$/).test(value)) return 'Your number phone is invalid (in Vietnam)'
+        if (!(/^(0|84|\+84|)(\d{9})$/).test(value)) return 'Your number phone is invalid (in Vietnam)'
     }
 export    const validEmail = (value: string) => {
         if (validRequire(value)) return validRequire(value)

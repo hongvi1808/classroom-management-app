@@ -40,12 +40,13 @@ export class AuthenticationService {
             accessCode: codeDigit,
         })
         // send code to twilio
-        await this.twilioService.sendSMS(phoneNumber, `Your access code is: ${codeDigit}`);
-        return { phoneNumber: phone, accessCode: codeDigit };
+        await this.twilioService.sendSMS(`+${phone}`, `Your access code is: ${codeDigit}`);
+        return { phoneNumber: phone };
     }
 
     public async validateAccessCode(phoneNumber: string, accessCode: string) {
-        const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'phoneNumber', op: '==', value: phoneNumber });
+        const phone = formatPhoneNumber(phoneNumber);
+        const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'phoneNumber', op: '==', value: phone });
         if (accessCode === userDoc?.accessCode) {
             await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, { accessCode: '', active:true, alive:true, updatedAt: new Date().getTime() });
             const { token, expireAt } = await generateToken({ phoneNumber: userDoc.id, role: userDoc.role });
