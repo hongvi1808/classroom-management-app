@@ -16,7 +16,12 @@ TWILIO_ACCOUNT_SID=
 TWILIO_AUTH_TOKEN=
 TWILIO_FROM_TO=
 ```
-3. ### Run project
+3. ### Add info Email sender
+```bash
+STMP_USER=
+STMP_PASSWORD=
+```
+4. ### Run project
 #### for .env.example file
 ```bash
 yarn start
