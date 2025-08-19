@@ -13,7 +13,6 @@ export interface UserCollection {
     updatedAt: number;
     accessCode?: string;
     role: string; // e.g., 'student', 'instructor'
-    isVerified?: boolean;
 }
 
 export interface LessonCollection {

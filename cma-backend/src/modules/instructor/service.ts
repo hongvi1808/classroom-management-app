@@ -16,7 +16,10 @@ export class InstructorService {
         this.mailService = Container.get(MailService);
     }
 
-    public async addStudent(data: { name: string, phoneNumber: string, email: string, role: string }) {
+    public async addStudent(data: { name: string, phoneNumber: string, email: string }) {
+        const phone = formatPhoneNumber(data.phoneNumber);
+        const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'id', op: '==', value: phone });
+        if (userDoc) throw { code: 'PHONE_NUMBER_EXISTED', message: 'Phone number is existed' }
         const dataStudent: UserCollection = {
             id: formatPhoneNumber(data.phoneNumber),
             name: data.name,
@@ -24,9 +27,9 @@ export class InstructorService {
             password: '', // Assuming password is not required here
             username: '', // Assuming username is not required here
             phoneNumber: formatPhoneNumber(data.phoneNumber),
-            active: true, alive: true,
+            active: false, alive: true,
             lessons: [],
-            role: data.role || ROLE_STUDENT,
+            role: ROLE_STUDENT,
             createdAt: new Date().getTime(),
             updatedAt: new Date().getTime()
         }
@@ -79,9 +82,11 @@ export class InstructorService {
     public async editStudent(phone: string, data: { name?: string, email?: string }) {
         const studentDoc = await this.getStudentByPhone(phone);
         const updatedData: any = { updatedAt: new Date().getTime() };
-        if (data.name) updatedData.name = data.name;
-        if (data.email) {
+        if (data.name !== studentDoc.name) updatedData.name = data.name;
+        if (phone !== studentDoc.phoneNumber) updatedData.phoneNumber = phone;
+        if (data.email !== studentDoc.email) {
             updatedData.email = data.email;
+            updatedData.active = false;
             const mailContent = `<p>Click <a href=${process.env.SECURE_ACCOUNT_PAGE_LINK}/${studentDoc.id} >tại đây</a> để xác thực tài khoản </p> `
             await this.mailService.sendMail(updatedData.email, 'Xác thực tài khoản', mailContent);
         }

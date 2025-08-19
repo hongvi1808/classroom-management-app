@@ -12,6 +12,7 @@ export const showAlertSuccess = (message: string | any,  option?: SweetAlertOpti
     text: message,
     icon: 'success',
     confirmButtonText: 'CLOSE',
+    timer: 1200,
     ...option
 });
 export const showAlertQuestion = (question: string | any, option?: SweetAlertOptions) => Swal.fire({

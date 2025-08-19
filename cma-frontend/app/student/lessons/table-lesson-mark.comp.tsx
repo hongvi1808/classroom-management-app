@@ -2,7 +2,7 @@
 
 import { studentApis } from "@/base/apis/student.api"
 import { showAlertError } from "@/base/ui/toaster";
-import { getSessionLocal } from "@/base/uitls";
+import { formatDate, getSessionLocal } from "@/base/uitls";
 import { ButtonIconText } from "@/components/button/buton-iconText.comp";
 import TableBase from "@/components/table/table-base.comp";
 import { CheckIcon, DocumentMinusIcon } from "@heroicons/react/16/solid";
@@ -36,7 +36,12 @@ export function TableLessonMark() {
             }
         },
         { field: 'title', headerName: 'Title Lesson', flex: 2 },
-        { field: 'description', headerName: 'Description', flex: 4 },
+        { field: 'description', headerName: 'Description', flex: 3 },
+        {
+            field: 'deliveredAt', headerName: 'Assigned At', flex: 2, renderCell: (params) => (
+                <>{formatDate(params.row.deliveredAt)}</>
+            ),
+        },
         {
             field: 'status', headerName: 'Status', flex: 2,
             renderCell: (params) => (
@@ -54,7 +59,7 @@ export function TableLessonMark() {
             renderCell: (params) => (params.row.status === 'pending' ? <ButtonIconText iconComp={<CheckIcon height={20} width={20} />}
                 buttonProps={{ color: 'primary', variant:'outlined', loading: isPending }}
                 title="Check Done"
-                onClick={() => mutate({phone:phoneNumber, lessonId:params.row.id})} />:  <></>
+                onClick={() => mutate({phone:phoneNumber, lessonId:params.row.id})} />:  <>{formatDate(params.row.completedAt)}</>
             ),
         },
 

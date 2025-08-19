@@ -1,5 +1,5 @@
 'use client'
-import { Box, Divider, Paper, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Divider, Paper, Stack, Typography } from "@mui/material";
 import { ChatingForm } from "../../../components/chating/chating-form.comp";
 import { MessageBox } from "@/components/chating/message-box.comp";
 import { db } from "@/base/firebase/firebase";
@@ -14,6 +14,7 @@ export default function ChatingPage() {
     const phoneHost = getSessionLocal()?.phoneNumber
     const messagesRef = ref(db, "messages");
     const [receiver, setReceiver] = useState<any>()
+    const [loadingHistory, setLoadingHistory] = useState<boolean>(false)
     const [messages, setMessages] = useState<{ id: string; senderId: string; text: string, receiverId: string }[]>([]);
     const { isLoading, data } = useQuery({
         queryKey: ['students'],
@@ -25,6 +26,7 @@ export default function ChatingPage() {
     useEffect(()=> setReceiver(data?.[0]), [data])
     useEffect(() => {
         if (!receiver) return;
+        if (!loadingHistory) setLoadingHistory(true)
         const messagesRef = ref(db, "messages");
         // Query theo điều kiện roomId
         const messagesQuery = query(
@@ -40,9 +42,13 @@ export default function ChatingPage() {
                 receiverId: value.receiverId,
                 senderId: value.senderId,
             }));
-            setMessages(parsed);
+            setTimeout(() => {
+setMessages(parsed);
+            setLoadingHistory(false)
+            }, 500)
+            
         });
-        return () => unsubscribe();
+        return () => {unsubscribe(); }
     }, [receiver]);
 
     const handleSendText = async (text: string) => {
@@ -67,18 +73,21 @@ export default function ChatingPage() {
                 <Divider orientation="vertical" flexItem />
                 <Stack height={'75vh'} flex={8}>
                     <Box
-
                         sx={{
                             flex: 1,
                             overflowY: "auto",
                             mb: 2,
                             px: 1,
+                          
                         }}
                     >
-                        {messages.map((m, index) => (
+                        {loadingHistory ? <Stack height={'100%'} alignItems={'center'} justifyContent={'center'}><CircularProgress /></Stack>:
+                        messages.map((m, index) => (
                             <MessageBox key={index} text={m.text} isOwn={m.receiverId === receiver?.id} />
                         ))}
                     </Box>
+
+                    
                     <ChatingForm onSendText={handleSendText} />
                 </Stack>
             </Stack>

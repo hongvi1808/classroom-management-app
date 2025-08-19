@@ -1,7 +1,7 @@
 'use client'
 import { instructorApis } from "@/base/apis/instructor.api";
 import { showAlertError, showAlertSuccess } from "@/base/ui/toaster";
-import { ROLE_INSTRCTOR, ROLE_STUDENT, validEmail, validPhone, validRequire } from "@/base/uitls";
+import { formatDate, ROLE_INSTRCTOR, ROLE_STUDENT, validEmail, validPhone, validRequire } from "@/base/uitls";
 import { AutocompleteBase } from "@/components/autocomplete/autocomplete-base.comp";
 import { ButtonIconText } from "@/components/button/buton-iconText.comp";
 import TableBase from "@/components/table/table-base.comp";
@@ -30,14 +30,25 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
     });
     const columns: GridColDef[] = [
         {
-            field: 'order', headerName: 'Order', renderCell: (params) => {
+            field: 'order', headerName: 'Order',
+            renderCell: (params) => {
                 return params.api.getRowIndexRelativeToVisibleRows(params.id) + 1;
             }
         },
-        { field: 'title', headerName: 'Title Lesson', flex: 0.2 },
-        { field: 'description', headerName: 'Description', flex: 0.3 },
+        { field: 'title', headerName: 'Title Lesson', flex: 2 },
+        { field: 'description', headerName: 'Description', flex: 3 },
         {
-            field: 'status', headerName: 'Status', flex: 0.1,
+            field: 'deliveredAt', headerName: 'Assigned At', flex: 2, renderCell: (params) => (
+                <>{formatDate(params.row.deliveredAt)}</>
+            ),
+        },
+        {
+            field: 'completedAt', headerName: 'Completed At', flex: 2, renderCell: (params) => (
+                <>{params.row.completedAt ? formatDate(params.row.completedAt) : ''}</>
+            ),
+        },
+        {
+            field: 'status', headerName: 'Status', flex: 2,
             renderCell: (params) => (
                 <Chip
                     label={params.row.status}
@@ -48,8 +59,7 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
             ),
         },
 
-        // { field: 'deliveredAt', headerName: 'Assigned At', flex: 0.1 },
-        // { field: 'completedAt', headerName: 'Completed At', flex: 0.1 },
+
     ];
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -58,7 +68,7 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
         datas.id = phone;
         mutate(datas)
     }
-    return <Stack spacing={2}>
+    return <Stack spacing={4}>
         <Stack direction={'row'} spacing={2} justifyContent={'space-between'}>
             <Typography component={'h1'} variant="h4">{'Student Information'}</Typography>
             <ButtonIconText
@@ -89,6 +99,7 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
                         options={[ROLE_INSTRCTOR, ROLE_STUDENT]}
                         label="Role"
                         name="role"
+                        disabled
                         default={data?.role}
                         renderInput={(param) => <></>}
                     />
@@ -99,7 +110,7 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
                         name='phoneNumber'
                         label="Phone Number"
                         getErrorMessage={validPhone}
-                        inputProps={{ type: 'tel', defaultValue: data?.phoneNumber, disabled: true }}
+                        inputProps={{ type: 'tel', defaultValue: data?.phoneNumber }}
                     />
                 </Grid>
                 <Grid size={6}>
@@ -112,7 +123,10 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
                 </Grid>
             </Grid>
         </Box>
+        <Stack >
+    <Typography variant="h6" >{'Lessons'}</Typography>
         <TableBase sx={{ marginTop: 2 }} loading={isLoading} rows={data?.lessons || []} columns={columns} />
+        </Stack>
     </Stack>
 
 }

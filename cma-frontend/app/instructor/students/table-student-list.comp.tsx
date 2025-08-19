@@ -42,7 +42,7 @@ export function TableStudentList() {
         { field: 'email', headerName: 'Email', flex: 0.25 },
         {field: 'active', headerName: 'Status', flex: 0.2, renderCell: (params) => (
                 <Chip
-                    label={params.row.active? 'Active' : 'Blocked'}
+                    label={params.row.active? 'Active' : 'Unverified'}
                     color={params.row.active ? "success" : "warning"}
                     size="medium"
                     variant="filled"
