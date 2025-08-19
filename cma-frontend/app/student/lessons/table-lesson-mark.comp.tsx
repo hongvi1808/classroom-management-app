@@ -9,16 +9,18 @@ import { CheckIcon, DocumentMinusIcon } from "@heroicons/react/16/solid";
 import { Box, Chip } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react";
 
 export function TableLessonMark() {
     const queryClient = useQueryClient();
     const phoneNumber = getSessionLocal()?.phoneNumber
     const { isLoading, data } = useQuery({
-        queryKey: ['lessons',phoneNumber],
+        queryKey: ['lessons', phoneNumber],
         queryFn: () => studentApis.getMyLesson(phoneNumber),
         enabled: !!phoneNumber
     })
-     const { mutate, isPending } = useMutation({
+    const [loadingMarkId, setLoadingMarkId] = useState<string>('')
+    const { mutate, isPending } = useMutation({
         mutationFn: studentApis.markLessonDone,
         onError: (error) => {
             console.error('Error calling api:', error);
@@ -27,8 +29,14 @@ export function TableLessonMark() {
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['lessons', phoneNumber] });
+            setLoadingMarkId('')
         },
     });
+    const handleCheckMark = (id: string) => {
+        mutate({ phone: phoneNumber, lessonId: id })
+        setLoadingMarkId(id)
+
+    }
     const columns: GridColDef[] = [
         {
             field: 'order', headerName: 'Order', renderCell: (params) => {
@@ -57,9 +65,13 @@ export function TableLessonMark() {
             field: "action",
             headerName: "", flex: 2,
             renderCell: (params) => (params.row.status === 'pending' ? <ButtonIconText iconComp={<CheckIcon height={20} width={20} />}
-                buttonProps={{ color: 'primary', variant:'outlined', loading: isPending }}
+                buttonProps={{
+                    color: 'primary', variant: 'outlined',
+                    loading: loadingMarkId === params.row?.id ? isPending : false,
+                    id: params.row.id
+                }}
                 title="Check Done"
-                onClick={() => mutate({phone:phoneNumber, lessonId:params.row.id})} />:  <>{formatDate(params.row.completedAt)}</>
+                onClick={() => handleCheckMark(params.row.id)} /> : <>{formatDate(params.row.completedAt)}</>
             ),
         },
 

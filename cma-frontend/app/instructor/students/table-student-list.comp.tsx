@@ -45,7 +45,7 @@ export function TableStudentList() {
                     label={params.row.active? 'Active' : 'Unverified'}
                     color={params.row.active ? "success" : "warning"}
                     size="medium"
-                    variant="filled"
+                    variant={params.row.active ? "filled" : "outlined"}
                 />
             ),
         },
