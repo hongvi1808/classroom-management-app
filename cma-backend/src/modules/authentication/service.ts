@@ -31,6 +31,7 @@ export class AuthenticationService {
                 phoneNumber: phone,
                 id,
                 role: ROLE_INSTRCTOR,
+                alive: true,
                 accessCode: codeDigit,
                 createdAt: new Date().getTime(),
                 updatedAt: new Date().getTime()

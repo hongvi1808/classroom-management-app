@@ -34,11 +34,11 @@ router.post('/mark-lesson-done', async (req, res) => {
         errorResponse(res, error)
     }
 });
-router.put('/edit-profile/:phoneNumber', async (req, res) => {
-    const { phone, name, email } = req.body;
-    const { phoneNumber} = req.params;
+router.put('/edit-profile/:id', async (req, res) => {
+    const { phoneNumber, name, email } = req.body;
+    const { id} = req.params;
     try {
-        const result = await service.editProfile(phoneNumber, { name, email, phone });
+        const result = await service.editProfile(id, { name, email, phoneNumber });
         successResponse(res, result )
     } catch (error) {
         errorResponse(res, error)

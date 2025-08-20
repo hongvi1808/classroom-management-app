@@ -5,11 +5,22 @@ export const validRequire = (value: string) => {
 }
 export const validPhone = (value: string) => {
     if (validRequire(value)) return validRequire(value)
-    if (!(/^(0|84|\+84|)(\d{9})$/).test(value)) return 'Your number phone is invalid (in Vietnam)'
+    if (!(/^(0|\+84)(3|5|7|8|9)[0-9]{8}$/).test(value)) return 'Your number phone is invalid (in Vietnam)'
 }
 export const validEmail = (value: string) => {
     if (validRequire(value)) return validRequire(value)
-    if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/).test(value)) return 'Your email is invalid'
+    if (!(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/).test(value)) return 'Your email is invalid'
+}
+
+export const regexVaid = (name: string) => {
+    if (!name) return {}
+    switch (name) {
+        case 'phoneNumber': return { pattern: "^(0|\\+84)(3|5|7|8|9)[0-9]{8}$" }
+        case 'email': return { pattern: "/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/" }
+
+
+        default: return {}
+    }
 }
 
 export const SESSION_LOCAL_STORAGE_KEY = 'session'
@@ -40,4 +51,16 @@ export const formatDate = (da: number | Date): string => {
     return `${h}:${m} ${d}-${mo}-${y}`;
 }
 
+export const formatPhone = (phone: string) => {
+    if (!phone) return ''
+    // Bỏ khoảng trắng, dấu gạch ngang nếu có
+    let cleaned = phone?.replace(/\D/g, "");
+
+    // Nếu bắt đầu bằng 84 → thay bằng 0
+    if (cleaned?.startsWith("84")) {
+        cleaned = "0" + cleaned.slice(2);
+    }
+
+    return cleaned;
+}
 

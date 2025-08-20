@@ -96,7 +96,8 @@ export function AddStudentForm() {
                         <Grid size={6} >
                             <TextFiledControlBase
                                 name='name'
-                                label="Name"
+                                label="Name*"
+                                inputProps={{required: true}}
                                 getErrorMessage={validRequire}
                             />
                         </Grid>
@@ -114,17 +115,17 @@ export function AddStudentForm() {
                         <Grid size={6}>
                             <TextFiledControlBase
                                 name='phoneNumber'
-                                label="Phone Number"
+                                label="Phone Number*"
                                 getErrorMessage={validPhone}
-                                inputProps={{ type: 'tel' }}
+                                inputProps={{required: true}}
                             />
                         </Grid>
                         <Grid size={6}>
                             <TextFiledControlBase
                                 name='email'
-                                label="Email"
+                                label="Email*"
                                 getErrorMessage={validEmail}
-                                inputProps={{ type: 'email' }}
+                                inputProps={{required: true}}
                             />
                         </Grid>
                     </Grid>
@@ -154,7 +155,8 @@ export function AddStudentForm() {
                 >
                             <TextFiledControlBase
                                 name='title'
-                                label="Title Lesson"
+                                label="Title Lesson*"
+                                inputProps={{required: true}}
                                 getErrorMessage={validRequire}
                             />
                             <AutocompleteBase<any, true>
@@ -171,9 +173,9 @@ export function AddStudentForm() {
 
                             <TextFiledControlBase
                                 name='description'
-                                label="Description Lesson"
+                                label="Description Lesson*"
                                 getErrorMessage={validRequire}
-                                inputProps={{multiline: true, rows: 4}}
+                                inputProps={{multiline: true, rows: 4, required: true}}
                             />
                 </Box>
             </DialogContent>

@@ -21,9 +21,9 @@ export function LayoutInstructor({
     const [open, setOpen] = useState(true);
 
     return <Box sx={{ display: "flex" }}>
-        <Header title="CMApp" logo={<Icon sx={{ justifyContent: 'center', alignContent: 'center', color:'orange' }} >
-                    <LightBulbIcon />
-                </Icon>} menuOpen={open} onToggleMenu={(op) => setOpen(op)} />
+        <Header title="CMApp" logo={<Icon sx={{ justifyContent: 'center', alignContent: 'center', color: 'orange' }} >
+            <LightBulbIcon />
+        </Icon>} menuOpen={open} onToggleMenu={(op) => setOpen(op)} />
         <Sitebar menus={menu} open={open} isOverSmViewport={isOverSmViewport} />
 
         <Box

@@ -20,7 +20,7 @@ axiosClient.interceptors.response.use(
       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, {
         withCredentials: true,
       });
-      if (res.data.success)
+      if (res?.data?.success)
         localStorage.setItem(SESSION_LOCAL_STORAGE_KEY, JSON.stringify(res.data.data))
     } catch (err) {
       console.error("Refresh token failed", err);
