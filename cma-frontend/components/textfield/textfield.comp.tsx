@@ -1,4 +1,5 @@
 'use client'
+import { regexVaid } from "@/base/uitls";
 import { BaseTextFieldProps, FormControl, FormLabel, TextField, } from "@mui/material";
 import { useState } from "react";
 
@@ -37,6 +38,7 @@ export function TextFiledControlBase(props: ITextFieldControlBaseProps) {
             error={!!errorMessage}
             helperText={errorMessage}
             color={errorMessage ? 'error': 'primary'}
+            inputProps={regexVaid(props.name)}
             {...props.inputProps}
         />
     </FormControl>

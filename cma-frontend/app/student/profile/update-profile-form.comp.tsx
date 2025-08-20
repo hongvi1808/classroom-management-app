@@ -1,7 +1,7 @@
 'use client'
 import { studentApis } from "@/base/apis/student.api";
 import { showAlertError, showAlertSuccess } from "@/base/ui/toaster";
-import { formatDate, getSessionLocal, validEmail, validPhone, validRequire } from "@/base/uitls";
+import { formatDate, formatPhone, getSessionLocal, validEmail, validPhone, validRequire } from "@/base/uitls";
 import { ButtonIconText } from "@/components/button/buton-iconText.comp";
 import { TextFiledControlBase } from "@/components/textfield/textfield.comp";
 import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/16/solid";
@@ -53,25 +53,25 @@ export function UpdateProfileForm() {
                 <Grid size={6} >
                     <TextFiledControlBase
                         name='name'
-                        label="Name"
-                        inputProps={{ defaultValue: data?.name }}
+                        label="Name*"
+                        inputProps={{ defaultValue: data?.name, required: true }}
                         getErrorMessage={validRequire}
                     />
                 </Grid>
                 <Grid size={6}>
                     <TextFiledControlBase
                         name='phoneNumber'
-                        label="Phone Number"
+                        label="Phone Number*"
                         getErrorMessage={validPhone}
-                        inputProps={{ type: 'tel', defaultValue: data?.phoneNumber }}
+                        inputProps={{ type: 'tel', defaultValue: formatPhone(data?.phoneNumber), required: true }}
                     />
                 </Grid>
                 <Grid size={6}>
                     <TextFiledControlBase
                         name='email'
-                        label="Email"
+                        label="Email*"
                         getErrorMessage={validEmail}
-                        inputProps={{ type: 'email', defaultValue: data?.email }}
+                        inputProps={{ type: 'email', defaultValue: data?.email, required: true }}
                     />
                 </Grid>
                 <Grid alignSelf={'center'} size={6} >

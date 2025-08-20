@@ -15,16 +15,16 @@ export class StudentService {
     }
 
     public async getMyLessons(phone: string) {
-        const studentDoc = await this.instructorService.getStudentByPhone(phone);
+        const studentDoc = await this.instructorService.getStudentById(phone);
         return studentDoc.lessons;
     }
     public async getProfile(phone: string) {
-        const studentDoc = await this.instructorService.getStudentByPhone(phone);
-        return {id: studentDoc.id, name: studentDoc.name,phoneNumber:studentDoc.phoneNumber, email: studentDoc.email,active:studentDoc.active, createdAt: studentDoc.createdAt};
+        const studentDoc = await this.instructorService.getStudentById(phone);
+        return { id: studentDoc.id, name: studentDoc.name, phoneNumber: studentDoc.phoneNumber, email: studentDoc.email, active: studentDoc.active, createdAt: studentDoc.createdAt };
     }
 
     public async markLessonDone(phone: string, lessonId: string) {
-        const studentDoc = await this.instructorService.getStudentByPhone(phone);
+        const studentDoc = await this.instructorService.getStudentById(phone);
 
         const lessons = studentDoc.lessons || [];
         const lesson = lessons.find((lesson: any) => lesson.id === lessonId);
@@ -38,15 +38,11 @@ export class StudentService {
             lessons
         });
     }
-    public async editProfile(studentId: string, data: { name: string, email: string, phone: string }) {
-        const updatedData: any = { updatedAt: new Date().getTime() };
-        if (data.name) updatedData.name = data.name;
-        if (data.phone) updatedData.phoneNumber = formatPhoneNumber(data.phone);
-        if (data.email) updatedData.email = data.email;
-        return await this.firestoreService.update(USER_COLLECTION_NAME, studentId, updatedData);
+    public async editProfile(studentId: string, data: { name: string, email: string, phoneNumber: string }) {
+        return await this.instructorService.editStudent(studentId, data)
     }
     public async getInstructor() {
-            const students = await this.firestoreService.findAllBy(USER_COLLECTION_NAME, { filed: 'role', op: '==', value: ROLE_INSTRCTOR });
-            return students.docs.map(doc => doc.data());
-        }
+        const students = await this.firestoreService.findAllBy(USER_COLLECTION_NAME, { filed: 'role', op: '==', value: ROLE_INSTRCTOR });
+        return students.docs.map(doc => doc.data());
+    }
 }

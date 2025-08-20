@@ -1,7 +1,7 @@
 'use client'
 import { instructorApis } from "@/base/apis/instructor.api";
 import { showAlertError, showAlertSuccess } from "@/base/ui/toaster";
-import { formatDate, ROLE_INSTRCTOR, ROLE_STUDENT, validEmail, validPhone, validRequire } from "@/base/uitls";
+import { formatDate, formatPhone, ROLE_INSTRCTOR, ROLE_STUDENT, validEmail, validPhone, validRequire } from "@/base/uitls";
 import { AutocompleteBase } from "@/components/autocomplete/autocomplete-base.comp";
 import { ButtonIconText } from "@/components/button/buton-iconText.comp";
 import TableBase from "@/components/table/table-base.comp";
@@ -54,7 +54,7 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
                     label={params.row.status}
                     color={params.row.status === 'done' ? "success" : "warning"}
                     size="medium"
-                    variant="filled"
+                    variant={params.row.status === 'done' ? "filled" : "outlined"}
                 />
             ),
         },
@@ -89,8 +89,8 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
                 <Grid size={6} >
                     <TextFiledControlBase
                         name='name'
-                        label="Name"
-                        inputProps={{ defaultValue: data?.name }}
+                        label="Name*"
+                        inputProps={{ defaultValue: data?.name, required: true }}
                         getErrorMessage={validRequire}
                     />
                 </Grid>
@@ -108,17 +108,17 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
                 <Grid size={6}>
                     <TextFiledControlBase
                         name='phoneNumber'
-                        label="Phone Number"
+                        label="Phone Number*"
                         getErrorMessage={validPhone}
-                        inputProps={{ type: 'tel', defaultValue: data?.phoneNumber }}
+                        inputProps={{ type: 'tel', defaultValue: formatPhone(data?.phoneNumber), required: true }}
                     />
                 </Grid>
                 <Grid size={6}>
                     <TextFiledControlBase
                         name='email'
-                        label="Email"
+                        label="Email*"
                         getErrorMessage={validEmail}
-                        inputProps={{ type: 'email', defaultValue: data?.email }}
+                        inputProps={{ type: 'email', defaultValue: data?.email, required: true }}
                     />
                 </Grid>
             </Grid>

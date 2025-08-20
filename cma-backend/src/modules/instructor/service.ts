@@ -71,19 +71,27 @@ export class InstructorService {
         return students.docs.map(doc => doc.data());
     }
 
+    public async getStudentById(phone: string) {
+        const studentDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'id', op: '==', value: phone });
+        if (!studentDoc) {
+            throw { message: 'Student not found', code: 'STUDENT_NOT_FOUND' }
+        }
+        return studentDoc
+    }
     public async getStudentByPhone(phone: string) {
-        const studentDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'phoneNumber', op: '==', value: phone });
+        const studentDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'phoneNumber', op: '==', value: formatPhoneNumber(phone) });
         if (!studentDoc) {
             throw { message: 'Student not found', code: 'STUDENT_NOT_FOUND' }
         }
         return studentDoc
     }
 
-    public async editStudent(phone: string, data: { name?: string, email?: string }) {
-        const studentDoc = await this.getStudentByPhone(phone);
+    public async editStudent(phone: string, data: { name?: string, email?: string, phoneNumber ?: string }) {
+        const phoneFormated = formatPhoneNumber(data?.phoneNumber || '')
+        const studentDoc = await this.getStudentById(phone);
         const updatedData: any = { updatedAt: new Date().getTime() };
         if (data.name !== studentDoc.name) updatedData.name = data.name;
-        if (phone !== studentDoc.phoneNumber) updatedData.phoneNumber = phone;
+        if (phoneFormated  !== studentDoc.phoneNumber) updatedData.phoneNumber = phoneFormated;
         if (data.email !== studentDoc.email) {
             updatedData.email = data.email;
             updatedData.active = false;
@@ -93,7 +101,7 @@ export class InstructorService {
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, updatedData);
     }
     public async deleteStudent(phone: string) {
-        const studentDoc: UserCollection = await this.getStudentByPhone(phone);
+        const studentDoc: UserCollection = await this.getStudentById(phone);
         const updatedData: any = { updatedAt: new Date().getTime(), alive: false };
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, updatedData);
     }

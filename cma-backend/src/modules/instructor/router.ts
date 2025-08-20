@@ -39,7 +39,7 @@ router.get('/students', async (req, res) => {
 router.get('/student/:phone', async  (req, res) => {
     const { phone } = req.params;
     try {
-        const result = await service.getStudentByPhone(phone);
+        const result = await service.getStudentById(phone);
         successResponse(res, result )
     } catch (error) {
         errorResponse(res, error)
