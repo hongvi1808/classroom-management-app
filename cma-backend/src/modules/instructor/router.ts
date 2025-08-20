@@ -8,9 +8,9 @@ const router = Router();
 const service = Container.get(InstructorService);
 
 router.post('/add-student', async (req, res) => {
-    const { name, phoneNumber, email, role } = req.body;
+    const { name, phoneNumber, email } = req.body;
     try {
-        const result = await service.addStudent({ name, phoneNumber, email, role });
+        const result = await service.addStudent({ name, phoneNumber, email });
         successResponse(res, result )
     } catch (error) {
         errorResponse(res, error)

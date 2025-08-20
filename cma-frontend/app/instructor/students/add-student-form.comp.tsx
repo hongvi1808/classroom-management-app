@@ -105,6 +105,7 @@ export function AddStudentForm() {
                                 options={[ROLE_INSTRCTOR, ROLE_STUDENT]}
                                 label="Role"
                                 name="role"
+                                disabled
                                 defaultValue={ROLE_STUDENT}
                                 renderInput={(param) => <></>}
                             />

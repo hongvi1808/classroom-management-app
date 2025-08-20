@@ -1,7 +1,7 @@
 'use client'
 import { studentApis } from "@/base/apis/student.api";
 import { showAlertError, showAlertSuccess } from "@/base/ui/toaster";
-import { getSessionLocal, validEmail, validPhone, validRequire } from "@/base/uitls";
+import { formatDate, getSessionLocal, validEmail, validPhone, validRequire } from "@/base/uitls";
 import { ButtonIconText } from "@/components/button/buton-iconText.comp";
 import { TextFiledControlBase } from "@/components/textfield/textfield.comp";
 import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/16/solid";
@@ -75,11 +75,11 @@ export function UpdateProfileForm() {
                     />
                 </Grid>
                 <Grid alignSelf={'center'} size={6} >
-                    <Typography >{`Created At: ${new Date(data?.createdAt)}`}</Typography>
+                    <Typography >{`Created At: ${formatDate(data?.createdAt)}`}</Typography>
                 </Grid>
                 <Grid size={6} >
                     <Chip
-                        label={data?.active ? 'Active' : 'Blocked'}
+                        label={data?.active ? 'Active' : 'Unverified'}
                         color={data?.active ? "success" : "warning"}
                         size="medium"
                         variant={data?.active ? "filled" : "outlined"}

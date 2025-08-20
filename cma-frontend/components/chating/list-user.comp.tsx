@@ -18,7 +18,11 @@ export function ListUser(props: IListUserProps) {
     return (
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
             {(props.users || []).map((item, key) => (
-                <ListItemButton selected={item.id === selected?.id} key={key} onClick={() => onSelectUser(item)}>
+                <ListItemButton 
+                selected={item.id === selected?.id}
+                 key={key} onClick={() => onSelectUser(item)}
+                 sx={{borderRadius: 2}}
+                 >
                     <ListItemAvatar>
                         <Avatar>
                             <Icon><UserIcon /></Icon>

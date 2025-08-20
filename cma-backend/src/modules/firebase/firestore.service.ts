@@ -66,7 +66,7 @@ export class FirestoreService {
     public async findOneBy(collectionName: string, opt: { filed: string, op: any, value: any }): Promise<any | null> {
         try {
             const collection = this.getCollection(collectionName)
-            const q = query(collection, where(opt.filed, opt.op, opt.value));
+            const q = query(collection, where(opt.filed, opt.op, opt.value), where('alive', '==', true));
             const querySnapshot = await getDocs(q);
             if (querySnapshot.empty) {
                 return null;

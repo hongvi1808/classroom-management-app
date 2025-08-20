@@ -1,10 +1,10 @@
 'use client'
-import { Box, Divider, Paper, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Divider, Paper, Stack, Typography } from "@mui/material";
 import { ChatingForm } from "../../../components/chating/chating-form.comp";
 import { MessageBox } from "@/components/chating/message-box.comp";
 import { db } from "@/base/firebase/firebase";
 import { equalTo, onValue, orderByChild, push, query, ref } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createRoomIdChat, getSessionLocal } from "@/base/uitls";
 import { useQuery } from "@tanstack/react-query";
 import { ListUser } from "@/components/chating/list-user.comp";
@@ -15,16 +15,19 @@ export default function StudentChatingPage() {
     const messagesRef = ref(db, "messages");
     const [receiver, setReceiver] = useState<any>()
     const [messages, setMessages] = useState<{ id: string; senderId: string; text: string, receiverId: string }[]>([]);
+        const [loadingHistory, setLoadingHistory] = useState<boolean>(false)
+
     const { isLoading, data } = useQuery({
         queryKey: ['students'],
         queryFn: studentApis.getInstructorList
     });
-    const onHandleSelect = (user: any) => {
+    const onHandleSelect = useCallback((user: any) => {
         setReceiver(user)
-    }
+    }, [])
     useEffect(()=> setReceiver(data?.[0]), [data])
     useEffect(() => {
         if (!receiver) return;
+        if (!loadingHistory) setLoadingHistory(true)
         const messagesRef = ref(db, "messages");
         // Query theo điều kiện roomId
         const messagesQuery = query(
@@ -40,12 +43,15 @@ export default function StudentChatingPage() {
                 receiverId: value.receiverId,
                 senderId: value.senderId,
             }));
-            setMessages(parsed);
+            setTimeout(() => {
+                setMessages(parsed);
+                setLoadingHistory(false)
+            }, 500)
         });
         return () => unsubscribe();
     }, [receiver]);
 
-    const handleSendText = async (text: string) => {
+    const handleSendText = useCallback(async (text: string) => {
         await push(messagesRef,
             {
                 text,
@@ -55,7 +61,7 @@ export default function StudentChatingPage() {
 
             }
         );
-    }
+    }, [createRoomIdChat(phoneHost, receiver?.id)])
     return <Stack direction={'column'} spacing={4} sx={{ marginLeft: 2 }}>
         <Paper elevation={3} sx={{ p: 2, borderRadius: 1 }}>
             <Stack direction={'row'} spacing={2} justifyContent={'space-between'} sx={{ marginLeft: 2, marginBottom: 2 }}>
@@ -75,9 +81,10 @@ export default function StudentChatingPage() {
                             px: 1,
                         }}
                     >
-                        {messages.map((m, index) => (
-                            <MessageBox key={index} text={m.text} isOwn={m.receiverId === receiver?.id} />
-                        ))}
+                        {loadingHistory ? <Stack height={'100%'} alignItems={'center'} justifyContent={'center'}><CircularProgress /></Stack>:
+                                                messages.map((m, index) => (
+                                                    <MessageBox key={index} text={m.text} isOwn={m.receiverId === receiver?.id} />
+                                                ))}
                     </Box>
                     <ChatingForm onSendText={handleSendText} />
                 </Stack>

@@ -8,9 +8,6 @@ import { Box, Button, Stack, Typography } from "@mui/material"
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React from "react";
-type Props = {
-    params: { id: string };
-};
 export default function SetupAccountPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = React.use(params);
     const router = useRouter()

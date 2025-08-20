@@ -7,12 +7,13 @@ import { ButtonBase } from "@/components/button/button-base.comp";
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 type Props = {
     params: { id: string };
 };
-export default function VerifyEmailAccount({ params }: Props) {
-    const { id } = params
+export default function VerifyEmailAccount({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = React.use(params);
     const router = useRouter()
     const { mutate, isPending } = useMutation({
         mutationFn: authApis.verifyEmail,
@@ -22,8 +23,8 @@ export default function VerifyEmailAccount({ params }: Props) {
         },
         onSuccess: (data) => {
             //fresh data
-            showAlertSuccess('Verify email successfully!')
             router.push(`/login/setup-account/${id}`)
+            showAlertSuccess('Verify email successfully!')
 
         },
     });

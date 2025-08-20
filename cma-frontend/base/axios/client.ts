@@ -27,10 +27,10 @@ axiosClient.interceptors.response.use(
     }
     }
     if (error.response?.status > 400) {
-      showAlertError(error.response.data.error.message)
+      showAlertError(error.response.data?.error?.message || error?.message)
       console.warn( error.response)
     }
-    return Promise.reject(error)
+    return Promise.reject(error.response.data?.error ?? error)
   }
 )
 

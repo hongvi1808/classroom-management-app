@@ -22,7 +22,7 @@ async function request<T = any>(
     url: string,
     data: any = null,
     options: RequestOptions = {}
-): Promise<T> {
+): Promise<T | undefined | null> {
     const { hasAuth, params, headers } = options
 
     const config = {
@@ -36,9 +36,8 @@ async function request<T = any>(
         },
     }
 
-    const res: DataResponse<T> = (await axiosClient.request<DataResponse<T>>(config)).data
-    if (!res.success) showAlertError(res.message)
-    return res.data
+    const res: DataResponse<T> = (await axiosClient.request<DataResponse<T>>(config))?.data
+    return res?.data
 }
 
 // Các method tiện dụng

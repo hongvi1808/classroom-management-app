@@ -1,10 +1,10 @@
 'use client'
-import { Box, Divider, Paper, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Divider, Paper, Stack, Typography } from "@mui/material";
 import { ChatingForm } from "../../../components/chating/chating-form.comp";
 import { MessageBox } from "@/components/chating/message-box.comp";
 import { db } from "@/base/firebase/firebase";
 import { equalTo, onValue, orderByChild, push, query, ref } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createRoomIdChat, getSessionLocal } from "@/base/uitls";
 import { useQuery } from "@tanstack/react-query";
 import { instructorApis } from "@/base/apis/instructor.api";
@@ -14,17 +14,19 @@ export default function ChatingPage() {
     const phoneHost = getSessionLocal()?.phoneNumber
     const messagesRef = ref(db, "messages");
     const [receiver, setReceiver] = useState<any>()
+    const [loadingHistory, setLoadingHistory] = useState<boolean>(false)
     const [messages, setMessages] = useState<{ id: string; senderId: string; text: string, receiverId: string }[]>([]);
     const { isLoading, data } = useQuery({
         queryKey: ['students'],
         queryFn: instructorApis.getStudents
     });
-    const onHandleSelect = (user: any) => {
+    const onHandleSelect = useCallback((user: any) => {
         setReceiver(user)
-    }
-    useEffect(()=> setReceiver(data?.[0]), [data])
+    }, [])
+    useEffect(() => setReceiver(data?.[0]), [data])
     useEffect(() => {
         if (!receiver) return;
+        if (!loadingHistory) setLoadingHistory(true)
         const messagesRef = ref(db, "messages");
         // Query theo điều kiện roomId
         const messagesQuery = query(
@@ -40,12 +42,16 @@ export default function ChatingPage() {
                 receiverId: value.receiverId,
                 senderId: value.senderId,
             }));
-            setMessages(parsed);
+            setTimeout(() => {
+                setMessages(parsed);
+                setLoadingHistory(false)
+            }, 500)
+
         });
-        return () => unsubscribe();
+        return () => { unsubscribe(); }
     }, [receiver]);
 
-    const handleSendText = async (text: string) => {
+    const handleSendText = useCallback(async (text: string) => {
         await push(messagesRef,
             {
                 text,
@@ -55,30 +61,33 @@ export default function ChatingPage() {
 
             }
         );
-    }
+    }, [createRoomIdChat(phoneHost, receiver?.id)])
     return <Stack direction={'column'} spacing={4} sx={{ marginLeft: 2 }}>
         <Paper elevation={3} sx={{ p: 2, borderRadius: 1 }}>
             <Stack direction={'row'} spacing={2} justifyContent={'space-between'} sx={{ marginLeft: 2, marginBottom: 2 }}>
                 <Stack flex={3}>
                     <Typography component={'h1'} variant="h6">{'List User'}</Typography>
 
-                     <ListUser onSelectUser={onHandleSelect} defaultSelected={data?.[0]} users={data || []} />
+                    <ListUser onSelectUser={onHandleSelect} defaultSelected={data?.[0]} users={data || []} />
                 </Stack>
                 <Divider orientation="vertical" flexItem />
                 <Stack height={'75vh'} flex={8}>
                     <Box
-
                         sx={{
                             flex: 1,
                             overflowY: "auto",
                             mb: 2,
                             px: 1,
+
                         }}
                     >
-                        {messages.map((m, index) => (
-                            <MessageBox key={index} text={m.text} isOwn={m.receiverId === receiver?.id} />
-                        ))}
+                        {loadingHistory ? <Stack height={'100%'} alignItems={'center'} justifyContent={'center'}><CircularProgress /></Stack> :
+                            messages.map((m, index) => (
+                                <MessageBox key={index} text={m.text} isOwn={m.receiverId === receiver?.id} />
+                            ))}
                     </Box>
+
+
                     <ChatingForm onSendText={handleSendText} />
                 </Stack>
             </Stack>

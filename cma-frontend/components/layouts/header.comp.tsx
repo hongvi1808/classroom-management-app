@@ -13,7 +13,7 @@ import { Bars3Icon, ChevronDoubleLeftIcon, PowerIcon, UserIcon } from '@heroicon
 import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { ButtonIcon } from '../button/button-icon.comp';
 import { useRouter } from 'next/navigation';
-import { SESSION_LOCAL_STORAGE_KEY } from '@/base/uitls';
+import { getSessionLocal, ROLE_STUDENT, SESSION_LOCAL_STORAGE_KEY } from '@/base/uitls';
 import { useMutation } from '@tanstack/react-query';
 import { authApis } from '@/base/apis/auth.api';
 import { showAlertError } from '@/base/ui/toaster';
@@ -168,9 +168,10 @@ const { mutate, isPending } = useMutation({
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
+                {getSessionLocal()?.role === ROLE_STUDENT &&
                 <MenuItem onClick={() => router.push('/student/profile')}>
                   <ButtonIconText buttonProps={{ variant: 'text', color: 'inherit'}} iconComp={<UserIcon height={20} width={20}/>} title='Profile'/>
-                </MenuItem>
+                </MenuItem>}
                 <MenuItem onClick={() => mutate()}>
                   <ButtonIconText buttonProps={{loading: isPending, variant: 'text', color: 'inherit'}} iconComp={<PowerIcon height={20} width={20}/>} title='Logout'/>
                 </MenuItem>
