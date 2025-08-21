@@ -6,6 +6,7 @@ import { Paper } from "@mui/material";
 
 interface IChattingFormProps {
     onSendText: (message: string) => void
+    isPending: boolean
 }
 export function ChatingForm(props: IChattingFormProps) {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -37,7 +38,7 @@ export function ChatingForm(props: IChattingFormProps) {
                 // onKeyDown: (e) => e.key === "Enter" && props.onSendText(e.currentTarget?.textContent)
 
             }} />
-        <ButtonIcon buttonProps={{ color: 'primary', type: 'submit', form: 'chating-form-id' }}
+        <ButtonIcon buttonProps={{ color: 'primary', type: 'submit', form: 'chating-form-id', loading: props.isPending }}
             iconComp={<PaperAirplaneIcon color="primary" />} />
     </Paper>
 }

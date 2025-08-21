@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import { v5 as uuidv5 } from "uuid";
+
 
 export const formatPhoneNumber = (phone: string): string => {
 
@@ -13,4 +15,8 @@ export const formatPhoneNumber = (phone: string): string => {
 export const gen6DigitCode = (): string => {
  const n = crypto.randomInt(0, 1000000);
   return n.toString().padStart(6, '0');
+}
+export const genRoomIdChating = (userIds: string[]): string => {
+const sorted = userIds.sort().join("-");
+  return uuidv5(sorted, uuidv5.URL)
 }

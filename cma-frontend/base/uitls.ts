@@ -28,6 +28,17 @@ export const SESSION_LOCAL_STORAGE_KEY = 'session'
 export const ROLE_INSTRCTOR = 'INSTRUCTOR';
 export const ROLE_STUDENT = 'STUDENT';
 
+export enum SocketStatusEnum {
+  INIT = 0,
+  CONNECTING = 1,
+  CONNECTED = 2,
+  ERR = 3,
+  RECONNECTING = 4,
+  RECONNECTINGFAIL = 5,
+  RECONNECTED = 6,
+  DISCONNECTED = 7,
+}
+
 export const getSessionLocal = () => {
     if (typeof window === 'undefined') return null
     const token = localStorage.getItem(SESSION_LOCAL_STORAGE_KEY)

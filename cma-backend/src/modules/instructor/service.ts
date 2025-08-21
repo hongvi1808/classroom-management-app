@@ -2,17 +2,23 @@ import 'reflect-metadata';
 import Container, { Service } from "typedi";
 import { FirestoreService } from "../firebase/firestore.service";
 import { v7 as uuidv7 } from 'uuid';
-import { USER_COLLECTION_NAME, UserCollection } from "../firebase/schema";
+import { MESSAGE_STORE_NAME, USER_COLLECTION_NAME, UserCollection } from "../firebase/schema";
 import { MailService } from "../mail/mail.service";
 import { ROLE_STUDENT } from "../../utils/constant";
-import { formatPhoneNumber } from '../../utils/function';
+import { formatPhoneNumber, genRoomIdChating } from '../../utils/function';
+import { RealtimeDBService } from '../firebase/realtime.service';
+import { SocketService } from '../socket/socket.service';
 
 @Service()
 export class InstructorService {
     private firestoreService: FirestoreService;
+    private realtimeService: RealtimeDBService;
+    private socketService: SocketService;
     private mailService: MailService;
     constructor() {
         this.firestoreService = Container.get(FirestoreService);
+        this.realtimeService = Container.get(RealtimeDBService);
+        this.socketService = Container.get(SocketService);
         this.mailService = Container.get(MailService);
     }
 
@@ -104,5 +110,18 @@ export class InstructorService {
         const studentDoc: UserCollection = await this.getStudentById(phone);
         const updatedData: any = { updatedAt: new Date().getTime(), alive: false };
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, updatedData);
+    }
+    public async pushMessage(data: {text: string, senderId: string, receiverId: string}) {
+        const roomId = genRoomIdChating([data.senderId, data.receiverId])
+        const res =  await this.realtimeService.create(`${MESSAGE_STORE_NAME}/${roomId}`, data);
+        const dataEmit = {id: res, ...data, roomId}
+        this.socketService.emitMessage(data.receiverId, 'chating', dataEmit )
+        return dataEmit
+    }
+    public async getMessageHistory(users: string[]) {
+        const roomId = genRoomIdChating(users)
+        const res = await this.realtimeService.findById(MESSAGE_STORE_NAME, roomId);
+        if (!res) return []
+        return {roomId, history: Object.keys(res).map((key) => ({ id: key, ...res[key] }))}
     }
 }

@@ -21,5 +21,11 @@ export const instructorApis = {
     assignLesson: (data: any) => {
         return apiBase.post(`${urlDefault}/assign-lesson`, data, { hasAuth: true });
     },
+    getMessageHistory: (data: any) => {
+        return apiBase.get(`${urlDefault}/message/history?userIds=${data}`, { hasAuth: true });
+    },
+    pushMessage: (data: any) => {
+        return apiBase.post(`${urlDefault}/message/push`, data, { hasAuth: true });
+    },
 
 }

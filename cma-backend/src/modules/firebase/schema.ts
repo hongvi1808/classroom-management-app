@@ -1,4 +1,5 @@
 export const USER_COLLECTION_NAME = 'user';
+export const MESSAGE_STORE_NAME = 'messages';
 export interface UserCollection {
     id: string;
     name: string;
@@ -22,4 +23,10 @@ export interface LessonCollection {
     status: string; // e.g., 'active', 'completed', 
     deliveriedAt: number; // in minutes
     completedAt: number;
+}
+export interface Message {
+    roomId: string
+    senderId: string;
+    receiverId: string
+    text: string
 }
