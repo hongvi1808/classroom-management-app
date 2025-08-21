@@ -1,3 +1,4 @@
+'use client'
 import { Box, CircularProgress } from "@mui/material";
 import UtmPage from "./utm";
 

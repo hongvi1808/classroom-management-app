@@ -6,69 +6,69 @@ import { db } from "@/base/firebase/firebase";
 import { equalTo, onValue, orderByChild, push, query, ref } from "firebase/database";
 import { useCallback, useEffect, useState } from "react";
 import { createRoomIdChat, getSessionLocal } from "@/base/uitls";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { instructorApis } from "@/base/apis/instructor.api";
 import { ListUser } from "@/components/chating/list-user.comp";
+import { useSocket } from "@/base/socket/useSocket";
+import { showAlertError } from "@/base/ui/toaster";
 
 export default function ChatingPage() {
     const phoneHost = getSessionLocal()?.phoneNumber
-    const messagesRef = ref(db, "messages");
+    const { socketClient, socketStatus } = useSocket(getSessionLocal()?.accessToken);
     const [receiver, setReceiver] = useState<any>()
-    const [loadingHistory, setLoadingHistory] = useState<boolean>(false)
-    const [messages, setMessages] = useState<{ id: string; senderId: string; text: string, receiverId: string }[]>([]);
-    const { isLoading, data } = useQuery({
+    const [messages, setMessages] = useState<{ id: string; roomId: string, senderId: string; text: string, receiverId: string }[]>([]);
+    const { data: studentList } = useQuery({
         queryKey: ['students'],
         queryFn: instructorApis.getStudents
     });
+    const { isLoading, data } = useQuery({
+        queryKey: ['message-history', [phoneHost, receiver?.id]],
+        queryFn: async () => await instructorApis.getMessageHistory([phoneHost, receiver?.id]),
+        enabled: !!phoneHost && !!receiver?.id,
+    });
+    const { mutate, isPending } = useMutation({
+        mutationFn: instructorApis.pushMessage,
+        onError: (error) => {
+            console.error('Error calling api:', error);
+            showAlertError(error.message)
+
+        },
+        onSuccess: (data) => {
+            messages.push(data)
+        },
+    });
     const onHandleSelect = useCallback((user: any) => {
         setReceiver(user)
+        setMessages([])
     }, [])
-    useEffect(() => setReceiver(data?.[0]), [data])
-    useEffect(() => {
-        if (!receiver) return;
-        if (!loadingHistory) setLoadingHistory(true)
-        const messagesRef = ref(db, "messages");
-        // Query theo điều kiện roomId
-        const messagesQuery = query(
-            messagesRef,
-            orderByChild("roomId"),
-            equalTo(createRoomIdChat(phoneHost, receiver?.id))
-        );
-        const unsubscribe = onValue(messagesQuery, (snapshot) => {
-            const data = snapshot.val() || {};
-            const parsed = Object.entries(data).map(([id, value]: any) => ({
-                id: id,
-                text: value.text,
-                receiverId: value.receiverId,
-                senderId: value.senderId,
-            }));
-            setTimeout(() => {
-                setMessages(parsed);
-                setLoadingHistory(false)
-            }, 500)
+    useEffect(() => setReceiver(studentList?.[0]), [studentList])
 
-        });
-        return () => { unsubscribe(); }
-    }, [receiver]);
+   useEffect(() => {
+        if (!socketClient || receiver?.id) return;
+        socketClient.on('chating', (mes: any) => {
+            setMessages((previous) => [...previous, mes] )
+        })
+        return () => {socketClient.off('disconnect')}
+    }, [socketClient, receiver?.id])
+
 
     const handleSendText = useCallback(async (text: string) => {
-        await push(messagesRef,
-            {
-                text,
-                senderId: phoneHost,
-                receiverId: receiver?.id,
-                roomId: createRoomIdChat(phoneHost, receiver?.id)
+        const data = {
+            text,
+            senderId: phoneHost,
+            receiverId: receiver?.id,
+            id: ''
 
-            }
-        );
-    }, [createRoomIdChat(phoneHost, receiver?.id)])
+        }
+        mutate(data)
+    }, [phoneHost, receiver?.id])
     return <Stack direction={'column'} spacing={4} sx={{ marginLeft: 2 }}>
         <Paper elevation={3} sx={{ p: 2, borderRadius: 1 }}>
             <Stack direction={'row'} spacing={2} justifyContent={'space-between'} sx={{ marginLeft: 2, marginBottom: 2 }}>
                 <Stack flex={3}>
                     <Typography component={'h1'} variant="h6">{'List User'}</Typography>
 
-                    <ListUser onSelectUser={onHandleSelect} defaultSelected={data?.[0]} users={data || []} />
+                    <ListUser onSelectUser={onHandleSelect} defaultSelected={studentList?.[0]} users={studentList || []} />
                 </Stack>
                 <Divider orientation="vertical" flexItem />
                 <Stack height={'75vh'} flex={8}>
@@ -81,14 +81,17 @@ export default function ChatingPage() {
 
                         }}
                     >
-                        {loadingHistory ? <Stack height={'100%'} alignItems={'center'} justifyContent={'center'}><CircularProgress /></Stack> :
-                            messages.map((m, index) => (
-                                <MessageBox key={index} text={m.text} isOwn={m.receiverId === receiver?.id} />
+                        {isLoading ? <Stack height={'100%'} alignItems={'center'} justifyContent={'center'}><CircularProgress /></Stack> :
+                            (data?.history || []).map((m: any) => (
+                                <MessageBox key={m.id} text={m.text} isOwn={m.receiverId === receiver?.id} />
                             ))}
+                        {(messages || []).filter(i => i?.roomId === data?.roomId).map((m) => (
+                            <MessageBox key={m.id} text={m.text} isOwn={m.receiverId === receiver?.id} />
+                        ))}
                     </Box>
 
 
-                    <ChatingForm onSendText={handleSendText} />
+                    <ChatingForm isPending={isPending} onSendText={handleSendText} />
                 </Stack>
             </Stack>
 

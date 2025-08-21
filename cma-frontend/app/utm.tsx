@@ -6,12 +6,12 @@ import React, { useEffect } from "react";
 export default function UtmPage() {
     const router = useRouter();
 
+    const session = localStorage.getItem(SESSION_LOCAL_STORAGE_KEY)
     useEffect(() => {
-        const session = localStorage.getItem(SESSION_LOCAL_STORAGE_KEY)
         const sObj = session ? JSON.parse(session) : null
         if (sObj?.role === ROLE_INSTRCTOR) return router.replace('/instructor')
         if (sObj?.role === ROLE_STUDENT) return router.replace('/student')
         return router.replace('/login')
-    }, [])
+    }, [session])
     return (<></>)
 }

@@ -45,4 +45,10 @@ export class StudentService {
         const students = await this.firestoreService.findAllBy(USER_COLLECTION_NAME, { filed: 'role', op: '==', value: ROLE_INSTRCTOR });
         return students.docs.map(doc => doc.data());
     }
+      public async pushMessage(data: {text: string, senderId: string, receiverId: string}) {
+            return await this.instructorService.pushMessage(data)
+        }
+        public async getMessageHistory(users: string[]) {
+            return await this.instructorService.getMessageHistory(users)
+        }
 }
