@@ -1,32 +1,14 @@
-'use client'
-
-import { authApis } from "@/base/apis/auth.api";
-import { showAlertError, showAlertSuccess } from "@/base/ui/toaster";
-import { ButtonBack } from "@/components/button/button-back.comp";
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import React from "react";
+import { ButtonBack } from "@/components/button/button-back.comp";
+import { Box, Divider, Stack, Typography } from "@mui/material";
+import VerifyEmailAccountForm from "./verify-email-form.comp";
 
 type Props = {
-    params: { id: string };
+  params: { id: string };
 };
-export default function VerifyEmailAccount({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = React.use(params);
-    const router = useRouter()
-    const { mutate, isPending } = useMutation({
-        mutationFn: authApis.verifyEmail,
-        onError: (error) => {
-            console.error('Error calling api:', error);
-            showAlertError(error.message)
-        },
-        onSuccess: (data) => {
-            //fresh data
-            router.push(`/login/setup-account/${id}`)
-            showAlertSuccess('Verify email successfully!')
-
-        },
-    });
+export default async function VerifyEmailAccount({params}: Props) {
+    
+    const {id} = await params
     return <Stack spacing={4} sx={{ justifyContent: "center", padding: 2, }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <ButtonBack />
@@ -42,14 +24,7 @@ export default function VerifyEmailAccount({ params }: { params: Promise<{ id: s
                 <Typography sx={{ color: 'text.secondary' }}>{'Please verify your email to login'}</Typography>
             </Divider>
         </Box>
-        <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            loading={isPending} onClick={() => mutate(id)}
-        >
-            {'Click to verify'}
-        </Button>
+        <VerifyEmailAccountForm id={id} />
     </Stack>
 
 
