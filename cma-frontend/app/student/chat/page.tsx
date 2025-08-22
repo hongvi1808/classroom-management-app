@@ -2,10 +2,8 @@
 import { Box, CircularProgress, Divider, Paper, Stack, Typography } from "@mui/material";
 import { ChatingForm } from "../../../components/chating/chating-form.comp";
 import { MessageBox } from "@/components/chating/message-box.comp";
-import { db } from "@/base/firebase/firebase";
-import { equalTo, onValue, orderByChild, push, query, ref } from "firebase/database";
 import { useCallback, useEffect, useState } from "react";
-import { createRoomIdChat, getSessionLocal } from "@/base/uitls";
+import { getSessionLocal } from "@/base/uitls";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { studentApis } from "@/base/apis/student.api";
 import { ListUser } from "@/components/chating/list-user.comp";
@@ -59,7 +57,7 @@ export default function ChatingStudentPage() {
             receiverId: receiver?.id,
 
         })
-    }, [phoneHost, receiver?.id])
+    }, [mutate, phoneHost, receiver?.id])
     return <Stack direction={'column'} spacing={4} sx={{ marginLeft: 2 }}>
         <Paper elevation={3} sx={{ p: 2, borderRadius: 1 }}>
             <Stack direction={'row'} spacing={2} justifyContent={'space-between'} sx={{ marginLeft: 2, marginBottom: 2 }}>

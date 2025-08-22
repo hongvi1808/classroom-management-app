@@ -1,7 +1,7 @@
 'use client'
 import { authApis } from "@/base/apis/auth.api"
 import { showAlertError } from "@/base/ui/toaster"
-import { validEmail, validRequire } from "@/base/uitls"
+import { validEmail } from "@/base/uitls"
 import { TextFiledControlBase } from "@/components/textfield/textfield.comp"
 import { Box, Button } from "@mui/material"
 import { useMutation } from "@tanstack/react-query"

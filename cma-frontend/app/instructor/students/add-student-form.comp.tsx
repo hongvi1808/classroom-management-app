@@ -72,7 +72,7 @@ export function AddStudentForm() {
         <Stack direction={'row'} spacing={2}>
             <ButtonIconText
                 iconComp={<PlusIcon height={20} width={20} />}
-                onClick={(e => onToggleAddDiaglog())}
+                onClick={(() => onToggleAddDiaglog())}
                 title={'Add Student'}
                 buttonProps={{ size: 'medium' }}
             />
