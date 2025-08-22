@@ -1,10 +1,10 @@
 import { ButtonBack } from "@/components/button/button-back.comp";
 import { Box, Stack, Typography } from "@mui/material"
 import SetupAccountForm from "./setup-account-form.comp";
-type Props = {
+type PageProps = {
     params: { id: string };
 };
-export default async function SetupAccountPage({ params }: Props) {
+export default async function SetupAccountPage({ params }: PageProps) {
 
     const { id } = await params
     return (
