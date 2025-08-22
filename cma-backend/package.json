@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "license": "MIT",
   "scripts": {
-    "build": "ts-node src/index.ts",
+    "build": "tsc",
+    "build:start": "node dist/index.js",
     "start": "dotenv -e .env.example ts-node src/index.ts",
     "start:dev": "nodemon --exec ts-node src/index.ts"
   },
