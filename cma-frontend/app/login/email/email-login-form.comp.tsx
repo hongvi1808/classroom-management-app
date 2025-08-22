@@ -19,7 +19,7 @@ export function EmailLoginForm() {
         },
         onSuccess: (data) => {
             localStorage.setItem('email', data.email)
-            router.push('/login/verify-email-by-code')
+            router.push('/login/verify-email')
         },
     });
 
