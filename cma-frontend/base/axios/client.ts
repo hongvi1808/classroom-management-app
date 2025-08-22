@@ -1,6 +1,6 @@
 import axios from "axios";
 import { showAlertError } from "../ui/toaster";
-import { SESSION_LOCAL_STORAGE_KEY } from "../uitls";
+import { getSessionLocal, SESSION_LOCAL_STORAGE_KEY } from "../uitls";
 
 const axiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -35,8 +35,7 @@ axiosClient.interceptors.response.use(
 )
 
 axiosClient.interceptors.request.use(async (config) => {
-  const token = localStorage.getItem(SESSION_LOCAL_STORAGE_KEY)
-  const tokenObj = token ? JSON.parse(token) : null
+  const tokenObj = getSessionLocal()
   if (tokenObj && tokenObj.accessToken && (tokenObj.expireAt - Math.floor(Date.now() / 1000) <= 5 * 60)) {
     // gọi API refresh
     try {

@@ -1,8 +1,7 @@
 'use client';
-import { Box, Button, ButtonProps, Icon, Stack } from '@mui/material';
+import { ButtonProps, Icon, Stack } from '@mui/material';
 import * as React from 'react';
 import { ButtonBase } from './button-base.comp';
-import { ArrowLeftIcon } from '@heroicons/react/16/solid';
 
 interface IButtonIconProps {
     iconComp: any

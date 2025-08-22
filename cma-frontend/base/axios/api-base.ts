@@ -1,8 +1,7 @@
 import { AxiosRequestConfig } from "axios"
 import axiosClient from "./client"
 import { DataResponse } from "../models/response.model"
-import { showAlertError } from "@/base/ui/toaster"
-import { SESSION_LOCAL_STORAGE_KEY } from "../uitls"
+import { getSessionLocal } from "../uitls"
 
 type Method = 'get' | 'post' | 'put' | 'delete'
 
@@ -11,10 +10,8 @@ interface RequestOptions extends AxiosRequestConfig {
     isLoading?: boolean,
 }
 const getAuthHeader = () => {
-    if (typeof window === 'undefined') return {}
-    const token = localStorage.getItem(SESSION_LOCAL_STORAGE_KEY)
-    const tokenObj = token ? JSON.parse(token) : null
-    return  { Authorization: `Bearer ${tokenObj?.accessToken}` } 
+    const token = getSessionLocal()?.accessToken
+    return token ?{ Authorization: `Bearer ${token}` } :{}
 }
 
 async function request<T = any>(

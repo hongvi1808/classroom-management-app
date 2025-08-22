@@ -24,7 +24,7 @@ export function VerifyPhoneForm() {
 
     const validCode = (value: string) => {
         if (validRequire(value)) return validRequire(value)
-        if (!(/^\d{6}$/).test(value)) return 'Your number phone is invalid'
+        if (!(/^\d{6}$/).test(value)) return 'Your code is invalid'
     }
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

@@ -55,10 +55,10 @@ export function TableStudentList() {
                 <Box>
                     <ButtonIcon iconComp={<PencilSquareIcon height={20} width={20} />}
                         buttonProps={{ color: 'primary' }}
-                        onClick={() => router.push(`/instructor/students/${params.row.phoneNumber}`)} />
+                        onClick={() => router.push(`/instructor/students/${params.row.id}`)} />
                     <ButtonIcon iconComp={<TrashIcon height={20} width={20} />}
                         buttonProps={{ color: 'error', loading: isPending }}
-                        onClick={() => mutate(params.row.phoneNumber)} />
+                        onClick={() => mutate(params.row.id)} />
 
                 </Box>
             ),

@@ -78,7 +78,7 @@ export class InstructorService {
     }
 
     public async getStudentById(phone: string) {
-        const studentDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'id', op: '==', value: phone });
+        const studentDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'id', op: '==', value: formatPhoneNumber(phone) });
         if (!studentDoc) {
             throw { message: 'Student not found', code: 'STUDENT_NOT_FOUND' }
         }
