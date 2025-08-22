@@ -2,11 +2,7 @@ import React from "react";
 import { ButtonBack } from "@/components/button/button-back.comp";
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import VerifyEmailAccountForm from "./verify-email-form.comp";
-
-type PageProps = {
-  params: { id: string };
-};
-export default async function VerifyEmailAccount({params}: PageProps) {
+export default async function VerifyEmailAccount({ params }: { params: Promise<{ id: string }> }) {
     
     const {id} = await params
     return <Stack spacing={4} sx={{ justifyContent: "center", padding: 2, }}>
