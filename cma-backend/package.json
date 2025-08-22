@@ -1,9 +1,11 @@
 {
   "name": "cma-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "author": "HongVi",
+  "main": "src/index.ts",
   "license": "MIT",
   "scripts": {
+    "build": "ts-node src/index.ts",
     "start": "dotenv -e .env.example ts-node src/index.ts",
     "start:dev": "nodemon --exec ts-node src/index.ts"
   },
