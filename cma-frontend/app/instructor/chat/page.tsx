@@ -83,7 +83,7 @@ export default function ChatingPage() {
                             (data?.history || []).map((m: any) => (
                                 <MessageBox key={m.id} text={m.text} isOwn={m.receiverId === receiver?.id} />
                             ))}
-                        {(messages || []).filter(i => i?.roomId === data?.roomId).map((m) => (
+                        {(messages || []).map((m) => (
                             <MessageBox key={m.id} text={m.text} isOwn={m.receiverId === receiver?.id} />
                         ))}
                     </Box>
