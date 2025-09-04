@@ -7,6 +7,7 @@ import { generateToken, verifyToken } from "../../utils/jwt";
 import { ROLE_INSTRCTOR } from "../../utils/constant";
 import { MailService } from "../mail/mail.service";
 import * as bcrypt from 'bcrypt';
+import { v7 as uuidv7 } from 'uuid';
 import { USER_COLLECTION_NAME } from "../firebase/schema";
 
 @Service()
@@ -103,6 +104,25 @@ export class AuthenticationService {
             active: true, alive: true,
             updatedAt: new Date().getTime()
         });
+        return true;
+    }
+    public async signUp(body: { name: string, username: string, password: string }) {
+        const userDoc = await this.firestoreService.findOneBy(USER_COLLECTION_NAME, { filed: 'username', op: '==', value: body.username });
+        
+        const hashedPassword = await bcrypt.hash(body.password, 10)
+        if (userDoc && userDoc?.exists()) {
+            throw { message: 'Username exsited', code: 'USERNAME_EXISTED' };
+        }
+        await this.firestoreService.create(USER_COLLECTION_NAME, {
+                id: uuidv7(),
+                username: body.username,
+                name: body.name,
+                password: hashedPassword, 
+                role: ROLE_INSTRCTOR,
+                alive: true,
+                createdAt: new Date().getTime(),
+                updatedAt: new Date().getTime()
+            });
         return true;
     }
     public async login(username: string, password: string) {

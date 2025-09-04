@@ -16,7 +16,7 @@ export const showAlertSuccess = (message: string | any,  option?: SweetAlertOpti
     ...option
 });
 export const showAlertQuestion = (question: string | any, option?: SweetAlertOptions) => Swal.fire({
-    text: 'Do you want to continue?',
+    text: question,
     icon: 'question',
     showCancelButton: true,
     confirmButtonText: "Continue",
