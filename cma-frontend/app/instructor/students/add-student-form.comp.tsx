@@ -27,7 +27,9 @@ export function AddStudentForm() {
         },
         onSuccess: (data) => {
             //fresh data
-            showAlertSuccess('Added a student!')
+            showAlertSuccess(`Added a student!`,  {timer: undefined,
+                 html: `<p>Please check email <span style="color: blue; text-decoration: underline;">${data?.email}</span>
+                  to verify student account.</p>`})
             onToggleAddDiaglog()
             queryClient.invalidateQueries({ queryKey: ['students'] });
         },
@@ -40,7 +42,7 @@ export function AddStudentForm() {
         },
         onSuccess: (data) => {
             //fresh data
-            showAlertSuccess('Assign lesson successfully!')
+            showAlertSuccess('Assign lesson successfully!',)
             onToggleAssignDiaglog()
             queryClient.invalidateQueries({ queryKey: ['students'] });
         },
@@ -125,7 +127,7 @@ export function AddStudentForm() {
                                 name='email'
                                 label="Email*"
                                 getErrorMessage={validEmail}
-                                inputProps={{required: true}}
+                                inputProps={{required: true, helperText: 'Please fill correct email to login for student role!'}}
                             />
                         </Grid>
                     </Grid>

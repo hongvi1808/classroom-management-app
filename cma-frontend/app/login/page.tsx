@@ -47,7 +47,7 @@ export default function Login() {
         <Typography sx={{ textAlign: 'center' }}>
           {"Don't you have an account? "}
           <Link
-            href="phone/login"
+            href="/login/signup"
             variant="body2"
             sx={{ alignSelf: 'center' }}
           >

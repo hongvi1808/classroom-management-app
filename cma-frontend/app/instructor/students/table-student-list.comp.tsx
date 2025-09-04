@@ -1,6 +1,6 @@
 'use client'
 import { instructorApis } from "@/base/apis/instructor.api";
-import { showAlertError, showAlertSuccess } from "@/base/ui/toaster";
+import { showAlertError, showAlertQuestion, showAlertSuccess } from "@/base/ui/toaster";
 import { ButtonIcon } from "@/components/button/button-icon.comp";
 import TableBase from "@/components/table/table-base.comp";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/16/solid";
@@ -16,7 +16,7 @@ export function TableStudentList() {
     const { isLoading, data } = useQuery({
         queryKey: ['students'],
         queryFn: instructorApis.getStudents
-    } );
+    });
     const { mutate, isPending } = useMutation({
         mutationFn: instructorApis.deleteStudent,
         onError: (error) => {
@@ -30,7 +30,13 @@ export function TableStudentList() {
             queryClient.invalidateQueries({ queryKey: ['students'] });
         },
     });
-
+    const handleDelete = (id: string) => {
+        showAlertQuestion('Are your want to delete this student?')
+            .then((result) => {
+                if (result.isConfirmed)
+                    mutate(id)
+            })
+    }
     const columns: GridColDef[] = [
         {
             field: 'order', headerName: 'Order', renderCell: (params) => {
@@ -40,16 +46,18 @@ export function TableStudentList() {
         { field: 'name', headerName: 'Name', flex: 0.25 },
         { field: 'phoneNumber', headerName: 'Phone Number', flex: 0.25 },
         { field: 'email', headerName: 'Email', flex: 0.25 },
-        {field: 'active', headerName: 'Status', flex: 0.2, renderCell: (params) => (
+        {
+            field: 'active', headerName: 'Status', flex: 0.2, renderCell: (params) => (
                 <Chip
-                    label={params.row.active? 'Active' : 'Unverified'}
+                    label={params.row.active ? 'Active' : 'Unverified'}
                     color={params.row.active ? "success" : "warning"}
                     size="medium"
                     variant={params.row.active ? "filled" : "outlined"}
                 />
             ),
         },
-        {field: "action",
+        {
+            field: "action",
             headerName: "", flex: 0.25,
             renderCell: (params) => (
                 <Box>
@@ -58,7 +66,7 @@ export function TableStudentList() {
                         onClick={() => router.push(`/instructor/students/${params.row.id}`)} />
                     <ButtonIcon iconComp={<TrashIcon height={20} width={20} />}
                         buttonProps={{ color: 'error', loading: isPending }}
-                        onClick={() => mutate(params.row.id)} />
+                        onClick={() => handleDelete(params.row.id)} />
 
                 </Box>
             ),

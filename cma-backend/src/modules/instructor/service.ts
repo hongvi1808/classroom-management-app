@@ -42,7 +42,7 @@ export class InstructorService {
         const res = await this.firestoreService.create(USER_COLLECTION_NAME, dataStudent);
         const mailContent = `<p>Click <a href=${process.env.SECURE_ACCOUNT_PAGE_LINK}/${dataStudent.id} >tại đây</a> để xác thực tài khoản </p> `
         await this.mailService.sendMail(data.email, 'Xác thực tài khoản', mailContent);
-        return res
+        return {email: data.email}
     }
     public async assignLesson(data: { studentPhones: string[], title: string, description: string }) {
         const datas = data.studentPhones.map(async (i: string) => {

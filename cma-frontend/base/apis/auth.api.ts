@@ -21,6 +21,9 @@ export const authApis = {
     setupAccount: (data: any) => {
         return apiBase.put(`${urlDefault}/account-setup/${data?.id}`, data);
     },
+    signUp: (data: any) => {
+        return apiBase.post(`${urlDefault}/signup`, data);
+    },
     loginAccount: (data: any) => {
         return apiBase.post(`${urlDefault}/login`, data);
     },

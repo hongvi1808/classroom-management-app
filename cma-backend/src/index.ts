@@ -24,7 +24,7 @@ const app = express();
 dotenv.config();
 const PORT = process.env.PORT;
 
-app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: process.env.CORS_ORIGIN || 'http://localhost:3000', credentials: true,   }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

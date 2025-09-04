@@ -7,7 +7,7 @@ import { ButtonIconText } from "@/components/button/buton-iconText.comp";
 import TableBase from "@/components/table/table-base.comp";
 import { TextFiledControlBase } from "@/components/textfield/textfield.comp";
 import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/16/solid";
-import { Box, Chip, Grid, Stack, Typography } from "@mui/material";
+import { Box, Button, Chip, Grid, Stack, Typography } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -50,12 +50,13 @@ export function UpdateStudentForm({ phone }: { phone: string }) {
         {
             field: 'status', headerName: 'Status', flex: 2,
             renderCell: (params) => (
-                <Chip
+
+                <Chip component={Button} onClick={() => console.log(params.row.status)}
                     label={params.row.status}
                     color={params.row.status === 'done' ? "success" : "warning"}
                     size="medium"
                     variant={params.row.status === 'done' ? "filled" : "outlined"}
-                />
+                    />
             ),
         },
 

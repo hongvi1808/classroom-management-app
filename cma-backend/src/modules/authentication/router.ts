@@ -16,6 +16,14 @@ router.post('/create-access-code', async (req, res) => {
         errorResponse(res, error);
     }
 });
+router.post('/signup', async (req, res) => {
+    try {
+        const result = await service.signUp(req.body);
+        successResponse(res, result);
+    } catch (error) {
+        errorResponse(res, error);
+    }
+});
 
 router.post('/validate-access-code', async (req, res) => {
     const { phoneNumber, accessCode } = req.body;
