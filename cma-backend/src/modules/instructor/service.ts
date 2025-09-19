@@ -8,18 +8,22 @@ import { ROLE_STUDENT } from "../../utils/constant";
 import { formatPhoneNumber, genRoomIdChating } from '../../utils/function';
 import { RealtimeDBService } from '../firebase/realtime.service';
 import { SocketService } from '../socket/socket.service';
+import { SendGridMailService } from '../mail/sendgrid.service';
 
 @Service()
 export class InstructorService {
     private firestoreService: FirestoreService;
     private realtimeService: RealtimeDBService;
     private socketService: SocketService;
-    private mailService: MailService;
+    // private mailService: MailService;
+        private sendGridMailService: SendGridMailService;
+    
     constructor() {
         this.firestoreService = Container.get(FirestoreService);
         this.realtimeService = Container.get(RealtimeDBService);
         this.socketService = Container.get(SocketService);
-        this.mailService = Container.get(MailService);
+        // this.mailService = Container.get(MailService);
+        this.sendGridMailService = Container.get(SendGridMailService);
     }
 
     public async addStudent(data: { name: string, phoneNumber: string, email: string }) {
@@ -41,7 +45,8 @@ export class InstructorService {
         }
         const res = await this.firestoreService.create(USER_COLLECTION_NAME, dataStudent);
         const mailContent = `<p>Click <a href=${process.env.SECURE_ACCOUNT_PAGE_LINK}/${dataStudent.id} >tại đây</a> để xác thực tài khoản </p> `
-        await this.mailService.sendMail(data.email, 'Xác thực tài khoản', mailContent);
+        // await this.mailService.sendMail(data.email, 'Xác thực tài khoản', mailContent);
+        await this.sendGridMailService.sendMail(data.email, 'Xác thực tài khoản', mailContent);
         return {email: data.email}
     }
     public async assignLesson(data: { studentPhones: string[], title: string, description: string }) {
@@ -102,7 +107,8 @@ export class InstructorService {
             updatedData.email = data.email;
             updatedData.active = false;
             const mailContent = `<p>Click <a href=${process.env.SECURE_ACCOUNT_PAGE_LINK}/${studentDoc.id} >tại đây</a> để xác thực tài khoản </p> `
-            await this.mailService.sendMail(updatedData.email, 'Xác thực tài khoản', mailContent);
+            // await this.mailService.sendMail(updatedData.email, 'Xác thực tài khoản', mailContent);
+            await this.sendGridMailService.sendMail(updatedData.email, 'Xác thực tài khoản', mailContent);
         }
         return await this.firestoreService.update(USER_COLLECTION_NAME, studentDoc.id, updatedData);
     }

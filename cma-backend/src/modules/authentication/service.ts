@@ -9,16 +9,19 @@ import { MailService } from "../mail/mail.service";
 import * as bcrypt from 'bcrypt';
 import { v7 as uuidv7 } from 'uuid';
 import { USER_COLLECTION_NAME } from "../firebase/schema";
+import { SendGridMailService } from "../mail/sendgrid.service";
 
 @Service()
 export class AuthenticationService {
     private firestoreService: FirestoreService;
     private twilioService: TwilioService;
     private mailService: MailService;
+    private sendGridMailService: SendGridMailService;
     constructor() {
         this.firestoreService = Container.get(FirestoreService);
         this.twilioService = Container.get(TwilioService);
         this.mailService = Container.get(MailService);
+        this.sendGridMailService = Container.get(SendGridMailService);
     }
 
     public async createAccessCode(phoneNumber: string) {
@@ -66,7 +69,8 @@ export class AuthenticationService {
         await this.firestoreService.update(USER_COLLECTION_NAME, userDoc.id, {
             accessCode: codeDigit,
         })
-        await this.mailService.sendMail(email, 'Your access code', `Your access code is: ${codeDigit}`);
+        // await this.mailService.sendMail(email, 'Your access code', `Your access code is: ${codeDigit}`);
+        await this.sendGridMailService.sendMail(email, 'Your access code', `Your access code is: ${codeDigit}`);
         return { email };
     }
 
