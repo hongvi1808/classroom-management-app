@@ -1,3 +1,4 @@
+'use client'
 import { Box,  Divider, Icon, Link, Stack, Typography } from "@mui/material";
 import { HomeLoginForm } from "./home-login-form.comp";
 import { ButtonBase } from "@/components/button/button-base.comp";
