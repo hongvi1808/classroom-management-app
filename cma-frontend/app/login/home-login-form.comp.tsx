@@ -48,6 +48,15 @@ export function HomeLoginForm() {
             getErrorMessage={validRequire}
             inputProps={{ placeholder: 'Your password', type: 'password', required: true }}
         />
+        <div>
+            <span style={{ fontSize: '0.875rem' }}>
+               {'Instructor Account test'}
+            </span>
+            <span style={{ fontSize: '0.875rem' }}>
+               {'username: vi, password: 1'}
+            </span>
+
+        </div>
         <Button
             type="submit"
             fullWidth
